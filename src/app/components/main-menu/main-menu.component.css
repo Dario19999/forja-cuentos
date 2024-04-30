@@ -1,0 +1,26 @@
+.main-menu--container{
+  width: 650px;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-menu--title{
+  font-size: 30px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+
+.main-menu--options{
+  width: 450px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}

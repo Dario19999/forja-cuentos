@@ -7,11 +7,7 @@ createWindow = () => {
     appWin = new BrowserWindow({
         width: 1024,
         height: 768,
-        //limit the size of the window lower and higher
-        minWidth: 1024,
-        minHeight: 768,
-        maxWidth: 1024,
-        maxHeight: 768,
+        useContentSize: true,
         title: "Forja Cuentos",
         resizable: false,
         webPreferences: {
