@@ -1,6 +1,24 @@
 <div class="main-menu--container ">
   <div class="main-menu--title">TITULO EQUISDE</div>
   <div class="main-menu--options rounded backdrop-blur-sm bg-white/30 shadow shadow-sky-100/50">
-    <app-button></app-button>
+    <app-button [config]="{
+      text: 'Crear Cuento',
+      theme: 'default',
+    }"></app-button>
+
+    <app-button [config]="{
+      text: 'Crear Narrador',
+      theme: 'default',
+    }"></app-button>
+
+    <app-button [config]="{
+      text: 'Mis Cuentos',
+      theme: 'purple',
+    }"></app-button>
+
+    <app-button [config]="{
+      text: 'Salir',
+      theme: 'red',
+    }"></app-button>
   </div>
 </div>
