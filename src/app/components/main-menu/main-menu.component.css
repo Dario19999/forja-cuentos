@@ -1,9 +1,7 @@
 .main-menu--container{
-  width: 650px;
-  height: 700px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -15,12 +13,10 @@
 }
 
 .main-menu--options{
-  width: 450px;
-  height: 500px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 35px;
+  margin-top: 40px;
 }

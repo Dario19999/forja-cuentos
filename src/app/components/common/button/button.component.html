@@ -1,3 +1,3 @@
-<button type="button" class="w-52 hover:text-white border focus:ring-4 focus:outline-none font-medium rounded-lg text-md px-12 py-3.5 text-center me-2 mb-2 {{this.buttonClass}}">
+<button [routerLink]="[this.buttonRedirect.path, this.buttonRedirect.view]" type="button" class="w-52 hover:text-white border focus:ring-4 focus:outline-none font-medium rounded-lg text-md px-12 py-3.5 text-center me-2 mb-2 {{this.buttonClass}}">
   {{ config.text }}
 </button>

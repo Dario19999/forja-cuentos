@@ -3,7 +3,7 @@ const { app, BrowserWindow } = require("electron");
 
 let appWin;
 
-createWindow = () => {
+const createWindow = () => {
     appWin = new BrowserWindow({
         show: false,
         title: "Forja Cuentos",

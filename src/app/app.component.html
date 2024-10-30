@@ -1,1 +1,25 @@
-<router-outlet></router-outlet>
+<div class="app--background-layout menuToggle">
+    <div class="logo">
+        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122 122">
+            <rect class="cls-1" width="35" height="35"/>
+            <rect class="cls-2" x="43.5" width="35" height="35"/>
+            <rect class="cls-3" x="87" width="35" height="35"/>
+            <rect class="cls-4" y="43.5" width="35" height="35"/>
+            <rect class="cls-5" x="43.5" y="43.5" width="35" height="35"/>
+            <rect class="cls-6" x="87" y="43.5" width="35" height="35"/>
+            <rect class="cls-7" y="87" width="35" height="35"/>
+            <rect class="cls-8" x="43.5" y="87" width="35" height="35"/>
+            <rect class="cls-9" x="87" y="87" width="35" height="35"/>
+        </svg>
+    </div>
+    <div class="bodyWrapper">
+        <div class="app--background">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <div class="menuWrapper">
+        <div class="menu">
+            <app-main-menu></app-main-menu>
+        </div>
+    </div>
+</div>

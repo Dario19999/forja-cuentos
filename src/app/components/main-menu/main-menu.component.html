@@ -1,24 +1,26 @@
-<div class="main-menu--container ">
-  <div class="main-menu--title">TITULO EQUISDE</div>
-  <div class="main-menu--options rounded backdrop-blur-sm bg-white/30 shadow shadow-sky-100/50">
-    <app-button [config]="{
-      text: 'Crear Cuento',
-      theme: 'default',
-    }"></app-button>
+<h3 class="main-menu--title">MENU PRINCIPAL</h3>
+<div class="main-menu--options">
+<app-button [config]="{
+    text: 'Crear Cuento',
+    theme: 'default',
+    redirectTo: { path: '/create-tale', view: 'create' },
+}"></app-button>
 
-    <app-button [config]="{
-      text: 'Crear Narrador',
-      theme: 'default',
-    }"></app-button>
+<app-button [config]="{
+    text: 'Crear Narrador',
+    theme: 'default',
+    redirectTo: { path: '/create-narrator', view: 'create' },
+}"></app-button>
 
-    <app-button [config]="{
-      text: 'Mis Cuentos',
-      theme: 'purple',
-    }"></app-button>
+<app-button [config]="{
+    text: 'Mis Cuentos',
+    theme: 'default',
+    redirectTo: { path: '/my-tales', view: 'list' },
+}"></app-button>
 
-    <app-button [config]="{
-      text: 'Salir',
-      theme: 'red',
-    }"></app-button>
-  </div>
+<app-button [config]="{
+    text: 'Salir',
+    theme: 'default',
+}"></app-button>
 </div>
+
