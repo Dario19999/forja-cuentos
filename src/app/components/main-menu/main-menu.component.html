@@ -1,21 +1,38 @@
-<h3 class="main-menu--title">MENU PRINCIPAL</h3>
+<h3 class="main-menu--title">
+    <a rputerLink="/home">
+        MENU PRINCIPAL
+    </a>
+</h3>
 <div class="main-menu--options">
+
+<app-button [config]="{
+    text: 'Login',
+    theme: 'green-blue',
+    redirectTo: { path: '/login' },
+}"></app-button>
+
 <app-button [config]="{
     text: 'Crear Cuento',
     theme: 'default',
-    redirectTo: { path: '/create-tale', view: 'create' },
+    redirectTo: { path: '/create-tale' },
 }"></app-button>
 
 <app-button [config]="{
     text: 'Crear Narrador',
     theme: 'default',
-    redirectTo: { path: '/create-narrator', view: 'create' },
+    redirectTo: { path: '/create-narrator' },
+}"></app-button>
+
+<app-button [config]="{
+    text: 'Crear Personaje',
+    theme: 'default',
+    redirectTo: { path: '/create-character' },
 }"></app-button>
 
 <app-button [config]="{
     text: 'Mis Cuentos',
     theme: 'default',
-    redirectTo: { path: '/my-tales', view: 'list' },
+    redirectTo: { path: '/tale-list' },
 }"></app-button>
 
 <app-button [config]="{

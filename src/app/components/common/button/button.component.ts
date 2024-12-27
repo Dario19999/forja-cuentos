@@ -2,7 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-button',
-    templateUrl: './button.component.html',
+    template: `
+        <button routerLink="{{buttonRedirect.path}}" type="{{config.type ? config.type : 'button'}}" class="w-52 hover:text-white border focus:ring-4 focus:outline-none font-medium rounded-lg text-md px-12 py-3.5 text-center me-2 mb-2 {{this.buttonClass}}">
+            {{ config.text }}
+        </button>
+    `,
     styleUrl: './button.component.css',
 })
 export class ButtonComponent implements OnInit {
@@ -27,7 +31,7 @@ export class ButtonComponent implements OnInit {
     }
 
     validateTheme(theme: string) {
-        return theme ? theme : 'default';
+        return theme || 'default';
     }
 
     setButtonClass(theme: string) {
@@ -38,19 +42,19 @@ export class ButtonComponent implements OnInit {
                 break;
             case 'purple-blue':
                 this.buttonClass =
-                    'text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2';
+                    'text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2';
                 break;
             case 'cyan-blue':
                 this.buttonClass =
-                    'text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2';
+                    'text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2';
                 break;
             case 'green-blue':
                 this.buttonClass =
-                    'text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2';
+                    'text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2';
                 break;
             case 'pink-orange':
                 this.buttonClass =
-                    'text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2';
+                    'text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2';
                 break;
         }
     }

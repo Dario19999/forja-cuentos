@@ -91,7 +91,7 @@ div.menuToggle .bodyWrapper::after {
 
 .menuWrapper {
     position: absolute;
-    top: 19%;
+    top: 12%;
     left: 15%;
     transition: transform .3s ease-out .05s, opacity .3s ease-out .05s;
     z-index: -1;

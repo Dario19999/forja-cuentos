@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "ng": "ng",
-    "start": "concurrently \"ng serve\" \"electron .\"",
+    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -31,7 +31,6 @@
     "@angular/compiler-cli": "^17.0.0",
     "@types/jasmine": "~5.1.0",
     "autoprefixer": "^10.4.19",
-    "concurrently": "^9.0.1",
     "electron": "^30.0.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
