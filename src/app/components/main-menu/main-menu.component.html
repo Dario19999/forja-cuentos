@@ -4,40 +4,14 @@
     </a>
 </h3>
 <div class="main-menu--options">
-
-<app-button [config]="{
-    text: 'Login',
-    theme: 'green-blue',
-    redirectTo: { path: '/login' },
-}"></app-button>
-
-<app-button [config]="{
-    text: 'Crear Cuento',
-    theme: 'default',
-    redirectTo: { path: '/create-tale' },
-}"></app-button>
-
-<app-button [config]="{
-    text: 'Crear Narrador',
-    theme: 'default',
-    redirectTo: { path: '/create-narrator' },
-}"></app-button>
-
-<app-button [config]="{
-    text: 'Crear Personaje',
-    theme: 'default',
-    redirectTo: { path: '/create-character' },
-}"></app-button>
-
-<app-button [config]="{
-    text: 'Mis Cuentos',
-    theme: 'default',
-    redirectTo: { path: '/tale-list' },
-}"></app-button>
-
-<app-button [config]="{
-    text: 'Salir',
-    theme: 'default',
-}"></app-button>
+    @for (option of optionList; track $index) {
+        <button
+        (click)="onOptionSelect()"
+        routerLink="{{option.redirectTo}}"
+        type="{{option.type ? option.type : 'button'}}"
+        class="menuOption w-52 hover:text-white border focus:ring-4 focus:outline-none font-medium rounded-lg text-md px-12 py-3.5 text-center me-2 mb-2 {{option.theme}}">
+            {{ option.title }}
+        </button>
+    }
 </div>
 

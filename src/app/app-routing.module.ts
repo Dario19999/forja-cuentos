@@ -15,8 +15,12 @@ const routes: Routes = [
     component: HomeComponent
   },
   {
-    path: 'tale-list',
-    component: TaleListComponent
+    path: 'login',
+    component: LoginComponent,
+    children: [
+        { path: '', component: LoginFormComponent },
+        { path: 'register', component: RegisterFormComponent }
+    ]
   },
   {
     path: 'create-tale',
@@ -26,12 +30,16 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'login',
-    component: LoginComponent,
-    children: [
-        { path: '', component: LoginFormComponent },
-        { path: 'register', component: RegisterFormComponent }
-    ]
+    path: 'tale-list',
+    component: TaleListComponent
+  },
+  {
+    path: 'create-narrator',
+    component: HomeComponent
+  },
+  {
+    path: 'create-character',
+    component: HomeComponent
   },
   {
     path: '',
