@@ -19,9 +19,9 @@ export class MainMenuComponent {
                 redirectTo: '/login',
             },
             {
-                title: 'Crear Cuento',
+                title: 'Lista de Cuentos',
                 theme: this.defaultTheme,
-                redirectTo: '/create-tale',
+                redirectTo: '/tale-list',
             },
             {
                 title: 'Crear Narrador',
@@ -32,15 +32,6 @@ export class MainMenuComponent {
                 title: 'Crear Personaje',
                 theme: this.defaultTheme,
                 redirectTo: '/create-character',
-            },
-            {
-                title: 'Lista de Cuentos',
-                theme: this.defaultTheme,
-                redirectTo: '/tale-list',
-            },
-            {
-                title: 'Salir',
-                theme: this.defaultTheme
             }
         ]
     }
