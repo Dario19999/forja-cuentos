@@ -24,10 +24,6 @@ const createWindow = () => {
 
     appWin.webContents.openDevTools();
 
-    mainWindow.webContents.on('did-finish-load', () => {
-      mainWindow.webContents.reloadIgnoringCache();
-    });
-
     appWin.on("closed", () => {
         appWin = null;
     });
