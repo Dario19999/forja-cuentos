@@ -24,14 +24,14 @@ export class MainMenuComponent {
                 redirectTo: '/tale-list',
             },
             {
-                title: 'Crear Narrador',
+                title: 'Lista de Narradores',
                 theme: this.defaultTheme,
-                redirectTo: '/create-narrator',
+                redirectTo: '/narrator-list',
             },
             {
-                title: 'Crear Personaje',
+                title: 'Lista de Personajes',
                 theme: this.defaultTheme,
-                redirectTo: '/create-character',
+                redirectTo: '/character-list',
             }
         ]
     }
