@@ -13,6 +13,8 @@ import { RegisterFormComponent } from './components/forms/login/register-form/re
 import { LoginFormComponent } from './components/forms/login/login-form/login-form.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NarratorListComponent } from './pages/narrator-list/narrator-list.component';
+import { NarratorListItemComponent } from './components/narrator/narrator-list-item/narrator-list-item.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     TaleForgeComponent,
     LoginComponent,
     RegisterFormComponent,
-    LoginFormComponent
+    LoginFormComponent,
+    NarratorListComponent,
+    NarratorListItemComponent
   ],
   imports: [
     BrowserModule,

@@ -8,6 +8,7 @@ import { TaleForgeComponent } from './pages/tale-forge/tale-forge.component';
 import { LoginComponent } from './pages/login/login.component';
 import { LoginFormComponent } from './components/forms/login/login-form/login-form.component';
 import { RegisterFormComponent } from './components/forms/login/register-form/register-form.component';
+import { NarratorListComponent } from './pages/narrator-list/narrator-list.component';
 
 const routes: Routes = [
   {
@@ -34,8 +35,12 @@ const routes: Routes = [
     component: TaleListComponent
   },
   {
+    path: 'narrator-list',
+    component: NarratorListComponent
+  },
+  {
     path: 'create-narrator',
-    component: HomeComponent
+    component: HomeComponent,
   },
   {
     path: 'create-character',
