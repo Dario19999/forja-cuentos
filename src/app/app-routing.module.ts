@@ -9,6 +9,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { LoginFormComponent } from './components/forms/login/login-form/login-form.component';
 import { RegisterFormComponent } from './components/forms/login/register-form/register-form.component';
 import { NarratorListComponent } from './pages/narrator-list/narrator-list.component';
+import { NarratorFormComponent } from './components/forms/narrator/narrator-form/narrator-form.component';
 
 const routes: Routes = [
   {
@@ -40,7 +41,7 @@ const routes: Routes = [
   },
   {
     path: 'create-narrator',
-    component: HomeComponent,
+    component: NarratorFormComponent,
   },
   {
     path: 'create-character',
