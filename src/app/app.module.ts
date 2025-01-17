@@ -16,6 +16,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NarratorListComponent } from './pages/narrator-list/narrator-list.component';
 import { NarratorListItemComponent } from './components/narrator/narrator-list-item/narrator-list-item.component';
 import { NarratorFormComponent } from './components/forms/narrator/narrator-form/narrator-form.component';
+import { CharacterListComponent } from './pages/character-list/character-list.component';
+import { CharacterListItemComponent } from './components/character/character-list-item/character-list-item.component';
+import { CharacterFormComponent } from './forms/character/character-form/character-form.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { NarratorFormComponent } from './components/forms/narrator/narrator-form
     LoginFormComponent,
     NarratorListComponent,
     NarratorListItemComponent,
-    NarratorFormComponent
+    NarratorFormComponent,
+    CharacterListComponent,
+    CharacterListItemComponent,
+    CharacterFormComponent
   ],
   imports: [
     BrowserModule,

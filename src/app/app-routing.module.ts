@@ -10,6 +10,8 @@ import { LoginFormComponent } from './components/forms/login/login-form/login-fo
 import { RegisterFormComponent } from './components/forms/login/register-form/register-form.component';
 import { NarratorListComponent } from './pages/narrator-list/narrator-list.component';
 import { NarratorFormComponent } from './components/forms/narrator/narrator-form/narrator-form.component';
+import { CharacterListComponent } from './pages/character-list/character-list.component';
+import { CharacterFormComponent } from './forms/character/character-form/character-form.component';
 
 const routes: Routes = [
   {
@@ -44,8 +46,12 @@ const routes: Routes = [
     component: NarratorFormComponent,
   },
   {
+    path: 'character-list',
+    component: CharacterListComponent
+  },
+  {
     path: 'create-character',
-    component: HomeComponent
+    component: CharacterFormComponent
   },
   {
     path: '',
