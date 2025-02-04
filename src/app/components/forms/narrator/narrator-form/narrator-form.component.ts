@@ -95,19 +95,6 @@ export class NarratorFormComponent {
     }
 
     onSubmit(): void {
-        if (this.narratorForm.invalid) {
-            console.log('Formulario inválido');
-            Object.values(this.narratorForm.controls).forEach( control =>{
-                if(control instanceof FormGroup){
-                    Object.values(control.controls).forEach( control => control.markAllAsTouched())
-                }
-                else{
-                    control.markAllAsTouched();
-                }
-            });
-        }
-        else{
-            console.log(this.narratorForm.value);
-        }
+
     }
 }
