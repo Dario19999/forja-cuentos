@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 @Component({
   selector: 'app-tale-form',
@@ -73,19 +73,23 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
             <div class="relative z-0 w-full mb-5 group">
                 <div class="md:gap-6 border-2 border-solid p-4">
                     <button
+                    (click)="addCharacter()"
                     type="button"
                     class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
                     >
                         +
                     </button>
-                    <select
-                        id="character"
-                        formControlName="character"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option>Personaje</option>
-                    </select>
-                    <div *ngIf="invalidCharacter" class="mt-2 text-sm text-red-600 dark:text-red-500">
-                        <span *ngIf="taleForm.get('character')?.errors?.['required']">El narrador es requerido</span>
+                    <div formArrayName="characters">
+                        <div *ngFor="let character of characters.controls; let i = index; let first = first" class="mb-2 flex gap-2">
+                            <select
+                                [formControlName]="i"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option>Personaje</option>
+                            </select>
+                            <button *ngIf="!first" type="button" (click)="removeCharacter(i)" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-small rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+                                -
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -170,11 +174,27 @@ export class TaleFormComponent {
             taleName: ['', [Validators.required, Validators.maxLength(30)]],
             taleGenre: ['Genero', [Validators.required]],
             narrator: ['Narrador', [Validators.required]],
-            character: ['Personaje', [Validators.required]],
+            characters: this.fb.array([this.createCharacterControl()]),
             taleIntroduction: ['', [Validators.required, Validators.maxLength(150)]],
             taleDevelopment: ['', [Validators.required, Validators.maxLength(150)]],
             taleConclusion: ['', [Validators.required, Validators.maxLength(150)]],
         });
+    }
+
+    createCharacterControl() {
+        return this.fb.control('Personaje', [Validators.required]);
+    }
+
+    get characters() {
+        return this.taleForm.get('characters') as FormArray;
+    }
+
+    addCharacter() {
+        this.characters.push(this.createCharacterControl());
+    }
+
+    removeCharacter(index: number) {
+        this.characters.removeAt(index);
     }
 
     onSubmit() {
@@ -204,10 +224,6 @@ export class TaleFormComponent {
 
     get invalidNarrator() {
         return this.taleForm.get('narrator')?.invalid && this.taleForm.get('narrator')?.touched;
-    }
-
-    get invalidCharacter() {
-        return this.taleForm.get('character')?.invalid && this.taleForm.get('character')?.touched;
     }
 
     get invalidIntroduction() {
