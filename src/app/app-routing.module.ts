@@ -11,6 +11,7 @@ import { NarratorFormComponent } from './components/forms/narrator/narrator-form
 import { CharacterListComponent } from './pages/character-list/character-list.component';
 import { CharacterFormComponent } from './components/forms/character/character-form/character-form.component';
 import { TaleFormComponent } from './components/forms/tale/tale-form/tale-form.component';
+import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
   {
     path: 'tale-list',
     component: TaleListComponent
+  },
+  {
+    path: 'tale',
+    component: ViewTaleComponent
   },
   {
     path: 'narrator-list',

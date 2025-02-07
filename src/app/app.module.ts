@@ -19,6 +19,7 @@ import { CharacterListItemComponent } from './components/character/character-lis
 import { CharacterFormComponent } from './components/forms/character/character-form/character-form.component';
 import { TaleListItemComponent } from './components/tale/tale-list-item/tale-list-item.component';
 import { TaleFormComponent } from './components/forms/tale/tale-form/tale-form.component';
+import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { TaleFormComponent } from './components/forms/tale/tale-form/tale-form.c
     CharacterListItemComponent,
     CharacterFormComponent,
     TaleListItemComponent,
-    TaleFormComponent
+    TaleFormComponent,
+    ViewTaleComponent
   ],
   imports: [
     BrowserModule,
