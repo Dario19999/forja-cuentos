@@ -1,0 +1,124 @@
+<form
+    class="login--form max-w-md mx-auto"
+    [formGroup]="registerForm"
+    (ngSubmit)="onSubmit()"
+>
+    <div class="m-3">
+        <h3 class="register--title">Registrarse</h3>
+    </div>
+    <div class="relative z-0 w-full mb-5 group">
+        <input
+            type="text"
+            name="floating_first_name"
+            id="floating_first_name"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            placeholder=" "
+            formControlName="name"
+            required
+        />
+        <label
+            for="floating_first_name"
+            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            >Nombre
+        </label>
+        <small
+            *ngIf="invalidName"
+            class="mt-2 text-sm text-red-600 dark:text-red-500"
+            >Obligatorio. Maximo 30 caracteres
+        </small>
+    </div>
+    <div class="grid md:grid-cols-2 md:gap-6">
+        <div class="relative z-0 w-full mb-5 group">
+            <input
+                type="text"
+                name="floating_apellido_paterno"
+                id="floating_apellido_paterno"
+                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+                formControlName="lastName"
+                required
+            />
+            <label
+                for="floating_apellido_paterno"
+                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >Apellido Paterno
+            </label>
+            <small
+                *ngIf="invalidLastName"
+                class="mt-2 text-sm text-red-600 dark:text-red-500"
+                >Obligatorio. Maximo 30 caracteres
+            </small>
+        </div>
+        <div class="relative z-0 w-full mb-5 group">
+            <input
+                type="text"
+                name="floating_apellido_materno"
+                id="floating_apellido_materno"
+                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+                formControlName="secondLastName"
+                required
+            />
+            <label
+                for="floating_apellido_materno"
+                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >Apellido Materno
+            </label>
+            <small
+                *ngIf="invalidSecondLastName"
+                class="mt-2 text-sm text-red-600 dark:text-red-500"
+                >Obligatorio. Maximo 30 caracteres
+            </small>
+        </div>
+    </div>
+    <div class="relative z-0 w-full mb-5 group">
+        <input
+            type="email"
+            name="floating_email"
+            id="floating_email"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            placeholder=" "
+            formControlName="email"
+            required
+        />
+        <label
+            for="floating_email"
+            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            >Email
+        </label>
+        <small
+            *ngIf="invalidEmail"
+            class="mt-2 text-sm text-red-600 dark:text-red-500"
+            >Obligatorio. Debe ser un correo valido. Maximo 50 caracteres
+        </small>
+    </div>
+    <div class="relative z-0 w-full mb-5 group">
+        <input
+            type="password"
+            name="floating_password"
+            id="floating_password"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            placeholder=" "
+            formControlName="password"
+            required
+        />
+        <label
+            for="floating_password"
+            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+            >Contraseña
+        </label>
+        <small>
+            *Debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial (&#64;$!%*?&)
+        </small>
+        <small
+            *ngIf="invalidPassword"
+            class="mt-2 text-sm text-red-600 dark:text-red-500"
+            >Obligatorio. Contraseña invalida
+        </small>
+    </div>
+    <button
+        type="submit"
+        class="w-52 hover:text-white border focus:ring-4 focus:outline-none font-medium rounded-lg text-md px-12 py-3.5 text-center me-2 mb-2 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2"
+        >Registrarse
+    </button>
+</form>

@@ -1,0 +1,123 @@
+.app--background-layout {
+    background-image: url("../assets/img/home-background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+
+    position: relative;
+    perspective: 2000px;
+}
+
+.bodyWrapper {
+    background-color: rgba(78, 77, 77, 0.63);
+    transition: transform .3s ease-in-out;
+    transform-origin: 100% 0 0;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 35px;
+}
+.bodyWrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0);
+    z-index: -1;
+    transition: background-color .3s;
+}
+
+/* ######################### */
+
+div.logo {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    z-index: 999;
+}
+rect[class^="cls-"] {
+     fill: #efefef;
+ }
+div.logo:hover rect {
+    animation: logoHover .4s ease-out;
+}
+.cls-4, .cls-8 {
+    animation-delay: .1s !important;
+}
+.cls-1, .cls-5, .cls-9 {
+    animation-delay: .2s !important;
+}
+.cls-2, .cls-6 {
+    animation-delay: .3s !important;
+}
+.cls-3 {
+    animation-delay: .4s !important;
+}
+@keyframes logoHover {
+    0% {fill: #efefef;}
+    50% {fill: #2e70d3;}
+    100% {fill: #efefef;}
+}
+
+/* ######################### */
+
+div.menuToggle .bodyWrapper {
+    transform: scale(.8) rotateY(-40deg); /*  scale(.9) */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-box-shadow: 0 0 10px 0 rgba(0,0,0,0.75);
+    -moz-box-shadow: 0 0 10px 0 rgba(0,0,0,0.75);
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.75);
+}
+div.menuToggle .bodyWrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.menuWrapper {
+    position: absolute;
+    top: 12%;
+    left: 15%;
+    transition: transform .3s ease-out .05s, opacity .3s ease-out .05s;
+    z-index: -1;
+    opacity: 0;
+    transform:translateX(20px);
+}
+div.menuToggle .menuWrapper {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.menu, .menu a {
+    color: #efefef;
+    text-decoration: none;
+}
+
+.menu h3 {
+    letter-spacing: 15px;
+    border-bottom: 1px solid #efefef;
+    font-size: 3em;
+}
+
+.app--background{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}

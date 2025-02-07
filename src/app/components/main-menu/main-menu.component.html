@@ -1,0 +1,17 @@
+<h3 class="main-menu--title">
+    <a rputerLink="/home">
+        MENU PRINCIPAL
+    </a>
+</h3>
+<div class="main-menu--options">
+    @for (option of optionList; track $index) {
+        <button
+        (click)="onOptionSelect()"
+        routerLink="{{option.redirectTo}}"
+        type="{{option.type ? option.type : 'button'}}"
+        class="menuOption w-52 hover:text-white border focus:ring-4 focus:outline-none font-medium rounded-lg text-md px-12 py-3.5 text-center me-2 mb-2 {{option.theme}}">
+            {{ option.title }}
+        </button>
+    }
+</div>
+
