@@ -7,7 +7,7 @@ import { catchError, map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthServiceService {
+export class AuthService {
 
     private readonly currentUserSubject: BehaviorSubject<any>;
     public currentUser: Observable<any>;

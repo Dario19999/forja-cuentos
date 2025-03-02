@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
-import { AuthServiceService } from '../../../../services/auth-service.service';
+import { AuthService } from '../../../../services/auth.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -15,7 +15,7 @@ export class LoginFormComponent {
     loginForm!: FormGroup;
 
     constructor(
-        private readonly authService: AuthServiceService,
+        private readonly authService: AuthService,
         private readonly formBuilder: FormBuilder,
         private readonly router: Router
     ) {
