@@ -20,6 +20,8 @@ import { CharacterFormComponent } from './components/forms/character/character-f
 import { TaleListItemComponent } from './components/tale/tale-list-item/tale-list-item.component';
 import { TaleFormComponent } from './components/forms/tale/tale-form/tale-form.component';
 import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -44,9 +46,16 @@ import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
     BrowserModule,
     AppRoutingModule,
     RouterModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptor,
+        multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

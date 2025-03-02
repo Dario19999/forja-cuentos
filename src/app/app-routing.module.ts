@@ -12,6 +12,7 @@ import { CharacterListComponent } from './pages/character-list/character-list.co
 import { CharacterFormComponent } from './components/forms/character/character-form/character-form.component';
 import { TaleFormComponent } from './components/forms/tale/tale-form/tale-form.component';
 import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
+import { authGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -29,30 +30,41 @@ const routes: Routes = [
   {
     path: 'create-tale',
     component: TaleFormComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'tale-list',
-    component: TaleListComponent
+    component: TaleListComponent,
+    canActivate: [authGuard]
+
   },
   {
     path: 'tale',
-    component: ViewTaleComponent
+    component: ViewTaleComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'narrator-list',
-    component: NarratorListComponent
+    component: NarratorListComponent,
+    canActivate: [authGuard]
+
   },
   {
     path: 'create-narrator',
     component: NarratorFormComponent,
+    canActivate: [authGuard]
+
   },
   {
     path: 'character-list',
-    component: CharacterListComponent
+    component: CharacterListComponent,
+    canActivate: [authGuard]
+
   },
   {
     path: 'create-character',
-    component: CharacterFormComponent
+    component: CharacterFormComponent,
+    canActivate: [authGuard]
   },
   {
     path: '',
