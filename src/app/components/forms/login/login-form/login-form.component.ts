@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../../services/auth.service';
-import { finalize } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login-form',
@@ -13,6 +13,7 @@ import { finalize } from 'rxjs';
 })
 export class LoginFormComponent {
     loginForm!: FormGroup;
+    errorMessage: string = '';
 
     constructor(
         private readonly authService: AuthService,
@@ -50,18 +51,25 @@ export class LoginFormComponent {
 
             const { email, password } = this.loginForm.value;
             this.authService.login(email, password)
-            .pipe( finalize( () => Swal.close() ) )
             .subscribe({
                 next: () => {
-                    console.log('Login correcto');
+                    Swal.close();
                     this.router.navigate(['/tale-list']);
                 },
-                error: (err) => {
+                error: (err: HttpErrorResponse ) => {
+                    Swal.close();
+                    if (err.status === 401) {
+                        this.errorMessage = 'Email o contraseña incorrectos';
+                    }
+                    else {
+                        this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                    }
+
                     Swal.fire({
                         allowOutsideClick: false,
                         icon: 'error',
                         title: 'Error de Login',
-                        text: err.error.error.message
+                        text: this.errorMessage
                     });
                 }
             })

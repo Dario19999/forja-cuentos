@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { EventsService } from './event.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,21 @@ export class AuthService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly eventsService: EventsService
     ) {
         this.currentUserSubject = new BehaviorSubject<any>(null);
         this.currentUser = this.currentUserSubject.asObservable();
 
         this.checkAuthStatus();
+
+        this.eventsService.on('auth:unauthorized').subscribe(() => {
+            this.handleUnauthorized();
+        });
+    }
+
+    private handleUnauthorized(): void {
+        this.currentUserSubject.next(null);
     }
 
     checkAuthStatus() {
@@ -44,7 +54,7 @@ export class AuthService {
             }),
             catchError((err) => {
                 console.error('Error durante el login:', err);
-                return throwError(() => new Error('Credenciales inválidas'));
+                return throwError(() => err);
             })
         )
     }
@@ -53,12 +63,12 @@ export class AuthService {
         this.http.post(`${this.API_URL}/user/logout`, {}, { withCredentials: true })
         .subscribe({
             next: () => {
-              this.currentUserSubject.next(null);
-              this.router.navigate(['/login']);
+                this.currentUserSubject.next(null);
+                this.router.navigate(['/login']);
             },
             error: () => {
-              this.currentUserSubject.next(null);
-              this.router.navigate(['/login']);
+                this.currentUserSubject.next(null);
+                this.router.navigate(['/login']);
             }
         });
     }
