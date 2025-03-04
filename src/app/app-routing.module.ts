@@ -13,6 +13,7 @@ import { CharacterFormComponent } from './components/forms/character/character-f
 import { TaleFormComponent } from './components/forms/tale/tale-form/tale-form.component';
 import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
 import { authGuard } from './core/guards/auth.guard';
+import { UserAccountComponent } from './pages/user-account/user-account.component';
 
 const routes: Routes = [
   {
@@ -67,10 +68,15 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'user-account',
+    component: UserAccountComponent,
+    canActivate: [authGuard]
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full'
-  }
+  },
 ];
 
 @NgModule({

@@ -1,24 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-register-form',
   templateUrl: './register-form.component.html'
 })
-export class RegisterFormComponent {
+export class RegisterFormComponent implements OnInit {
 
     public registerForm!: FormGroup;
     private errorMessage: string = '';
 
+    private emailValidators: any;
+    private passwordValidators: any;
+
+    public isEdit = input<boolean>(false);
+
     constructor(
         private readonly authService: AuthService,
         private readonly formBuilder: FormBuilder,
-        private readonly router: Router
+        private readonly userService: UserService,
+        private readonly router: Router,
     ) {
+    }
+
+    ngOnInit(): void {
+        this.emailValidators =  this.isEdit() ?
+        [{value: '', disabled: true}, [Validators.email, Validators.maxLength(50)]] :
+        ['', [Validators.required, Validators.email, Validators.maxLength(50)]];
+
+        this.passwordValidators =  this.isEdit() ?
+        [{value: '', disabled: true}, [
+            Validators.maxLength(20),
+            Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[@$!%*?&]).{8,}$/)
+        ]] :
+        ['', [
+            Validators.required,
+            Validators.maxLength(20),
+            Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[@$!%*?&]).{8,}$/)
+        ]];
+
         this.formInit();
+
+        if(this.isEdit()){
+            this.userService.getUser().subscribe({
+                next: (userData) => {
+                    this.registerForm.controls['name'].setValue(userData.name);
+                    this.registerForm.controls['lastName'].setValue(userData.lastName);
+                    this.registerForm.controls['secondLastName'].setValue(userData.secondLastName);
+                    this.registerForm.controls['email'].setValue(userData.email);
+                },
+                error: (err) => {
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'error',
+                        text:  'Error en el servidor. Por favor, inténtalo de nuevo más tarde'
+                    });
+                }
+            })
+        }
     }
 
     formInit(): void {
@@ -26,12 +70,8 @@ export class RegisterFormComponent {
             name: ['', [Validators.required, Validators.maxLength(30)]],
             lastName: ['', [Validators.required, Validators.maxLength(30)]],
             secondLastName: ['', [Validators.required, Validators.maxLength(30)]],
-            email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
-            password: ['', [
-                Validators.required,
-                Validators.maxLength(20),
-                Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[@$!%*?&]).{8,}$/)
-            ]],
+            email: this.emailValidators,
+            password: this.passwordValidators
         });
     }
 
@@ -57,32 +97,62 @@ export class RegisterFormComponent {
 
             const userData = this.registerForm.value;
 
-            this.authService.signIn(userData).subscribe({
-                next: () => {
-                    Swal.close();
-                    Swal.fire({
-                        allowOutsideClick: false,
-                        icon: 'success',
-                        text: 'Usuario registrado correctamente'
-                    });
-                    this.router.navigate(['/tale-list']);
-                },
-                error: (err) => {
-                    if (err.status === 409) {
-                        this.errorMessage = 'Ya existe un usuario con el correo electrónico proporcionado';
-                    }
-                    else {
-                        this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
-                    }
-                    Swal.close();
-                    Swal.fire({
-                        allowOutsideClick: false,
-                        icon: 'error',
-                        text:  this.errorMessage
-                    });
-                }
-            });
+            if(this.isEdit()){
+                this.updateUser(userData);
+            } else {
+                this.registerUser(userData);
+            }
         }
+    }
+
+    private registerUser(userData: any): void {
+        this.authService.signIn(userData).subscribe({
+            next: () => {
+                Swal.close();
+                Swal.fire({
+                    allowOutsideClick: false,
+                    icon: 'success',
+                    text: 'Usuario registrado correctamente'
+                });
+                this.router.navigate(['/tale-list']);
+            },
+            error: (err) => {
+                if (err.status === 409) {
+                    this.errorMessage = 'Ya existe un usuario con el correo electrónico proporcionado';
+                }
+                else {
+                    this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                }
+                Swal.close();
+                Swal.fire({
+                    allowOutsideClick: false,
+                    icon: 'error',
+                    text:  this.errorMessage
+                });
+            }
+        });
+    }
+
+    private updateUser(userData: any): void {
+        this.userService.updateUser(userData).subscribe({
+            next: () => {
+                Swal.close();
+                Swal.fire({
+                    allowOutsideClick: false,
+                    icon: 'success',
+                    text: 'Usuario actualizado correctamente'
+                });
+                this.router.navigate(['/tale-list']);
+            },
+            error: (err) => {
+                Swal.close();
+                Swal.fire({
+                    allowOutsideClick: false,
+                    icon: 'error',
+                    text:  'Error en el servidor. Por favor, inténtalo de nuevo más tarde'
+                });
+            }
+        });
     }
 
     get invalidName(): boolean | undefined {

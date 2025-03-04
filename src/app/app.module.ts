@@ -22,6 +22,7 @@ import { TaleFormComponent } from './components/forms/tale/tale-form/tale-form.c
 import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { UserAccountComponent } from './pages/user-account/user-account.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     CharacterFormComponent,
     TaleListItemComponent,
     TaleFormComponent,
-    ViewTaleComponent
+    ViewTaleComponent,
+    UserAccountComponent
   ],
   imports: [
     BrowserModule,

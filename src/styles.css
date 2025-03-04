@@ -2,3 +2,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.form--content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 75vh;
+    background-color: rgba(245, 245, 245, 0.75);
+    border-radius: 25px;
+}
