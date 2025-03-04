@@ -1,17 +1,22 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { AuthService } from '../../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-form',
-  templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.css'
+  templateUrl: './register-form.component.html'
 })
 export class RegisterFormComponent {
 
-    registerForm!: FormGroup;
+    public registerForm!: FormGroup;
+    private errorMessage: string = '';
 
     constructor(
-        private readonly formBuilder: FormBuilder
+        private readonly authService: AuthService,
+        private readonly formBuilder: FormBuilder,
+        private readonly router: Router
     ) {
         this.formInit();
     }
@@ -31,6 +36,7 @@ export class RegisterFormComponent {
     }
 
     onSubmit(): void {
+        console.log(this.registerForm.value);
         if (this.registerForm.invalid) {
             Object.values(this.registerForm.controls).forEach( control =>{
                 if(control instanceof FormGroup){
@@ -42,7 +48,40 @@ export class RegisterFormComponent {
             });
         }
         else{
-            console.log(this.registerForm.value);
+            Swal.fire({
+                allowOutsideClick: false,
+                icon: 'info',
+                text: 'Registrando Usuario...'
+            });
+            Swal.showLoading();
+
+            const userData = this.registerForm.value;
+
+            this.authService.signIn(userData).subscribe({
+                next: () => {
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'success',
+                        text: 'Usuario registrado correctamente'
+                    });
+                    this.router.navigate(['/tale-list']);
+                },
+                error: (err) => {
+                    if (err.status === 409) {
+                        this.errorMessage = 'Ya existe un usuario con el correo electrónico proporcionado';
+                    }
+                    else {
+                        this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                    }
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'error',
+                        text:  this.errorMessage
+                    });
+                }
+            });
         }
     }
 

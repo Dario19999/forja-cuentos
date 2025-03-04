@@ -45,6 +45,20 @@ export class AuthService {
         });
     }
 
+    signIn(userData: {name: string, lastName: string, secondLastName: string, email: string, password: string}): Observable<any> {
+        return this.http.post(`${this.API_URL}/user`, userData, {withCredentials: true})
+        .pipe(
+            map((userData: any) => {
+                this.currentUserSubject.next(userData);
+                return userData;
+            }),
+            catchError((err) => {
+                console.error('Error durante el login:', err);
+                return throwError(() => err);
+            })
+        )
+    }
+
     login(email: string, password: string): Observable<any> {
         return this.http.post(`${this.API_URL}/user/login`, { email, password }, {withCredentials: true})
         .pipe(
@@ -53,7 +67,6 @@ export class AuthService {
                 return userData;
             }),
             catchError((err) => {
-                console.error('Error durante el login:', err);
                 return throwError(() => err);
             })
         )
