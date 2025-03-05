@@ -6,7 +6,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class CharacterService {
 
     private readonly API_URL = 'http://localhost:3000/api';
 
@@ -15,11 +15,11 @@ export class UserService {
         private readonly router: Router,
     ) { }
 
-    getUser(): Observable<any> {
-        return this.http.get(`${this.API_URL}/user`, {withCredentials: true})
+    getCharacters(): Observable<any> {
+        return this.http.get(`${this.API_URL}/character/list`, {withCredentials: true})
         .pipe(
-            map((userData: any) => {
-                return userData;
+            map((charactersData: any) => {
+                return charactersData;
             }),
             catchError((err) => {
                 return throwError(() => err);
@@ -27,12 +27,11 @@ export class UserService {
         )
     }
 
-    updateUser(userData: {name: string, lastName: string, secondLastName: string}): Observable<any> {
-        return this.http.put(`${this.API_URL}/user`, userData, {withCredentials: true})
+    getCharacter(characterId: string): Observable<any> {
+        return this.http.get(`${this.API_URL}/character/${characterId}`, {withCredentials: true})
         .pipe(
-            map((userData: any) => {
-                this.router.navigate(['/user-account']);
-                return userData;
+            map((characterData: any) => {
+                return characterData;
             }),
             catchError((err) => {
                 return throwError(() => err);

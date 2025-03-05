@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CharacterService } from '../../services/character.service';
 
 @Component({
   selector: 'app-character-list',
   template: `
     <ul class="w-100 text-bg font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-        <li class="flex w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-            <app-character-list-item></app-character-list-item>
-        </li>
+        @for (character of characters; track $index) {
+            <li class="flex w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+                <app-character-list-item [character]="character"></app-character-list-item>
+            </li>
+        }
     </ul>
     <div class="relative text-center m-5">
         <a
@@ -19,5 +22,14 @@ import { Component } from '@angular/core';
   styleUrl: './character-list.component.css'
 })
 export class CharacterListComponent {
+    public characters: any[] = [];
 
+    constructor(
+        private readonly characterService: CharacterService,
+    ) {
+        this.characterService.getCharacters().subscribe((charactersData) => {
+            console.log(charactersData);
+            this.characters = charactersData;
+        });
+    }
 }
