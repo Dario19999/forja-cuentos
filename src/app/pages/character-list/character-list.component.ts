@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CharacterService } from '../../services/character.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-character-list',
@@ -27,9 +28,20 @@ export class CharacterListComponent {
     constructor(
         private readonly characterService: CharacterService,
     ) {
-        this.characterService.getCharacters().subscribe((charactersData) => {
-            console.log(charactersData);
-            this.characters = charactersData;
+        this.loadCharacters();
+    }
+
+    loadCharacters(): void {
+        Swal.fire({
+            allowOutsideClick: false
+        });
+        Swal.showLoading();
+        this.characterService.getCharacters().subscribe({
+            next: (charactersData) => {
+                Swal.close();
+                this.characters = charactersData;
+            }
         });
     }
+
 }

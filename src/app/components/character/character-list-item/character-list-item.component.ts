@@ -1,12 +1,13 @@
 import { Component, effect, Input, OnInit, signal } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CharacterService } from '../../../services/character.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-character-list-item',
   template: `
     <form
         [formGroup]="characterListItemForm"
-        (ngSubmit)="onSubmit()"
     >
         <div class="grid md:grid-cols-4 md:gap-6">
             <div class="relative z-0 w-full group">
@@ -23,7 +24,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
                 <select
                     formControlName="characterType"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option selected>{{character.type}}</option>
                     <option value="protagonista">Protagonista</option>
                     <option value="secundario">Secundario</option>
                     <option value="antagonista">Antagonista</option>
@@ -49,9 +49,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
                     </button>
                 } @else {
                     <button
-                        type="button"
+                        type="submit"
                         class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
-                        (click)="saveChanges(character.id)"
+                        (click)="onSubmit(character.id)"
                         >Guardar
                     </button>
                 }
@@ -73,9 +73,13 @@ export class CharacterListItemComponent implements OnInit {
     public character:any = {}
 
     public toggleEdit = signal<boolean>(false);
+    public editedCharacter = signal<number>(0);
+
+    private errorMessage: string = '';
 
     constructor(
-        private readonly fb: FormBuilder
+        private readonly fb: FormBuilder,
+        private readonly characterService: CharacterService,
     ) {
         effect(() => {
             if(this.toggleEdit()){
@@ -88,7 +92,7 @@ export class CharacterListItemComponent implements OnInit {
                 this.characterListItemForm.get('characterDescription')?.disable();
             }
         });
-     }
+    }
 
     ngOnInit(): void {
         this.formInit();
@@ -97,12 +101,12 @@ export class CharacterListItemComponent implements OnInit {
     formInit() {
         this.characterListItemForm = this.fb.group({
             characterName: [{value: this.character.name, disabled: true}, [Validators.required, Validators.maxLength(100)]],
-            characterType: [{value: '', disabled: true}, [Validators.required]],
+            characterType: [{value: this.character.type, disabled: true}, [Validators.required]],
             characterDescription: [{value: this.character.role, disabled: true}, [Validators.required]]
         });
     }
 
-    onSubmit() {
+    onSubmit(characterId: number) {
         if (this.characterListItemForm.invalid) {
             Object.values(this.characterListItemForm.controls).forEach( control =>{
                 if(control instanceof FormGroup){
@@ -114,13 +118,41 @@ export class CharacterListItemComponent implements OnInit {
             });
         }
         else{
-            console.log(this.characterListItemForm.value);
-        }
-    }
+            this.editedCharacter.set(characterId);
+            Swal.fire({
+                allowOutsideClick: false,
+                icon: 'info',
+                text: 'Registrando Usuario...'
+            });
+            Swal.showLoading();
 
-    public saveChanges(characterId: string) {
-        console.log(characterId);
-        this.toggleEdit.set(false);
+            this.characterService.updateCharacter(this.editedCharacter(), this.characterListItemForm.value).subscribe({
+                next: () => {
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'success',
+                        text: 'Personaje actualizado correctamente'
+                    });
+                    this.toggleEdit.set(false);
+                },
+                error: (err) => {
+                    if (err.status === 409) {
+                        this.errorMessage = 'Error: El personaje existe dentro de un cuento';
+                    }
+                    else {
+                        this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                    }
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'error',
+                        text:  this.errorMessage
+                    });
+                }
+            });
+
+        }
     }
 
     get invalidName() {
