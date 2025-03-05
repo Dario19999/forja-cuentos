@@ -39,6 +39,19 @@ export class CharacterService {
         )
     }
 
+    createCharacter(characterData: any): Observable<any> {
+        return this.http.post(`${this.API_URL}/character`, characterData, {withCredentials: true})
+        .pipe(
+            map((characterData: any) => {
+                return characterData;
+            }),
+            catchError((err) => {
+                return throwError(() => err);
+            })
+        )
+
+    }
+
     updateCharacter(characterId: number, characterData: any): Observable<any> {
         return this.http.put(`${this.API_URL}/character/${characterId}`, characterData, {withCredentials: true})
         .pipe(
