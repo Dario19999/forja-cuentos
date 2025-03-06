@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, effect, Input, OnInit, output, signal } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { NarratorService } from '../../../services/narrator.service';
 
 @Component({
   selector: 'app-narrator-list-item',
   template: `
     <form
         [formGroup]="narratorListItemForm"
-        (ngSubmit)="onSubmit()"
     >
         <div class="grid md:grid-cols-4 md:gap-6">
             <div class="relative z-0 w-full group">
@@ -15,45 +16,47 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
                     name="floating_first_name"
                     id="floating_first_name"
                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" "
-                    formControlName="narratorName"
+                    formControlName="alias"
                     required
                 />
-                <label
-                    for="floating_first_name"
-                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Nombre
-                </label>
             </div>
             <div class="relative z-0 w-full group">
                 <select
-                    formControlName="narratorType"
+                    formControlName="type"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option>Tipo</option>
+                    @for (type of typeList; track $index) {
+                        <option value='{{ type.value }}'>{{ type.label }}</option>
+                    }
                 </select>
             </div>
             <div class="relative z-0 w-full group">
                 <select
-                    formControlName="voice"
+                    formControlName="voiceReference"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option>Voz</option>
+                    <option value="female">Femenina</option>
+                    <option value="male">Masculina</option>
                 </select>
             </div>
             <div class="relative z-0 w-full h-full group">
-                <button
-                    type="button"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                >Editar
-                </button>
-                <button
-
-                    type="button"
-                    class="hidden text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
-                >Guardar
-                </button>
+                @if(!toggleEdit()){
+                    <button
+                        type="button"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                        (click)="toggleEdit.set(true)"
+                    >Editar
+                    </button>
+                } @else {
+                    <button
+                        type="submit"
+                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                        (click)="onSubmit(narrator.id)"
+                        >Guardar
+                    </button>
+                }
                 <button
                     type="button"
                     class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-blue-800"
+                    (click)="onDelete(narrator.id)"
                 >Eliminar
                 </button>
             </div>
@@ -62,34 +65,57 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   `,
   styleUrl: './narrator-list-item.component.css'
 })
-export class NarratorListItemComponent {
+export class NarratorListItemComponent implements OnInit{
     narratorListItemForm!: FormGroup;
 
+    @Input()
+    public narrator: any = {};
+
+    public deletedNarrator = output<boolean>();
+
+    public typeList = [
+        { value: 'protagonista', label: 'Protagonista' },
+        { value: 'observador', label: 'Observador' },
+        { value: 'equisciente', label: 'Equisciente' },
+        { value: 'multiple', label: 'Múltiple' },
+        { value: 'omnisciente', label: 'Omnisciente' },
+    ]
+
+    public toggleEdit = signal<boolean>(false);
+    public editedCharacter = signal<number>(0);
+
+    private errorMessage: string = '';
+
     constructor(
-        private readonly formBuilder: FormBuilder
+        private readonly formBuilder: FormBuilder,
+        private readonly narratorService: NarratorService,
     ) {
+        effect(() => {
+            if(this.toggleEdit()){
+                this.narratorListItemForm.get('alias')?.enable();
+                this.narratorListItemForm.get('type')?.enable();
+                this.narratorListItemForm.get('voiceReference')?.enable();
+            } else {
+                this.narratorListItemForm.get('alias')?.disable();
+                this.narratorListItemForm.get('type')?.disable();
+                this.narratorListItemForm.get('voiceReference')?.disable();
+            }
+        });
+    }
+
+    ngOnInit(): void {
         this.formInit();
     }
 
     formInit(): void {
         this.narratorListItemForm = this.formBuilder.group({
-            narratorName: ['', [Validators.required, Validators.maxLength(30)]],
-            narratorType: ['', [Validators.required]],
-            voice: ['', [Validators.required]],
+            alias: [{value: this.narrator.alias, disabled: true}, [Validators.required, Validators.maxLength(30)]],
+            type: [{value: this.narrator.type, disabled: true}, [Validators.required]],
+            voiceReference: [{value: this.narrator.voiceReference, disabled: true}, [Validators.required]],
         });
     }
 
-    get invalidName(): boolean | undefined {
-        return this.narratorListItemForm.get('name')?.invalid && this.narratorListItemForm.get('name')?.touched;
-    }
-    get invalidNarratorType(): boolean | undefined {
-        return this.narratorListItemForm.get('narratorType')?.invalid && this.narratorListItemForm.get('narratorType')?.touched;
-    }
-    get invalidVoice(): boolean | undefined {
-        return this.narratorListItemForm.get('voice')?.invalid && this.narratorListItemForm.get('voice')?.touched;
-    }
-
-    onSubmit(): void {
+    onSubmit(narratorId: number): void {
         if (this.narratorListItemForm.invalid) {
             Object.values(this.narratorListItemForm.controls).forEach( control =>{
                 if(control instanceof FormGroup){
@@ -101,7 +127,94 @@ export class NarratorListItemComponent {
             });
         }
         else{
-            console.log(this.narratorListItemForm.value);
+             Swal.fire({
+                allowOutsideClick: false,
+                icon: 'info',
+                text: 'Actualizando narrador...'
+            });
+            Swal.showLoading();
+
+            this.narratorService.updateNarrator(narratorId, this.narratorListItemForm.value).subscribe({
+                next: () => {
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'success',
+                        text: 'Narrador actualizado correctamente'
+                    });
+                    this.toggleEdit.set(false);
+                },
+                error: (err) => {
+                    if (err.status === 409) {
+                        this.errorMessage = 'Error: El narrador existe dentro de un cuento';
+                    }
+                    else {
+                        this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                    }
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'error',
+                        text:  this.errorMessage
+                    });
+                }
+            });
         }
     }
+
+    onDelete(narratorId: number) {
+        Swal.fire({
+            allowOutsideClick: false,
+            icon: 'info',
+            confirmButtonText: "Eliminar",
+            showCancelButton: true,
+            cancelButtonText: `Cancelar`,
+            text: '¿Eliminar narrador?',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.narratorService.removeNarrator(narratorId).subscribe({
+                    next: () => {
+                        Swal.close();
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'success',
+                            confirmButtonText: "Ok",
+                            text: 'Narrador eliminado correctamente'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.deletedNarrator.emit(true);
+                            }
+                        });
+                    },
+                    error: (err) => {
+                        if (err.status === 409) {
+                            this.errorMessage = 'Error: El narrador existe dentro de un cuento';
+                        }
+                        else {
+                            this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                        }
+                        Swal.close();
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'error',
+                            text:  this.errorMessage
+                        });
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    get invalidName(): boolean | undefined {
+        return this.narratorListItemForm.get('name')?.invalid && this.narratorListItemForm.get('name')?.touched;
+    }
+    get invalidtype(): boolean | undefined {
+        return this.narratorListItemForm.get('type')?.invalid && this.narratorListItemForm.get('type')?.touched;
+    }
+    get invalidvoiceReference(): boolean | undefined {
+        return this.narratorListItemForm.get('voiceReference')?.invalid && this.narratorListItemForm.get('voiceReference')?.touched;
+    }
+
 }
