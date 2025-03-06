@@ -74,7 +74,6 @@ export class CharacterListItemComponent implements OnInit {
     public character:any = {}
 
     public toggleEdit = signal<boolean>(false);
-    public editedCharacter = signal<number>(0);
 
     private errorMessage: string = '';
 
@@ -121,15 +120,14 @@ export class CharacterListItemComponent implements OnInit {
             });
         }
         else{
-            this.editedCharacter.set(characterId);
             Swal.fire({
                 allowOutsideClick: false,
                 icon: 'info',
-                text: 'Registrando Usuario...'
+                text: 'Actualizando personaje...'
             });
             Swal.showLoading();
 
-            this.characterService.updateCharacter(this.editedCharacter(), this.characterListItemForm.value).subscribe({
+            this.characterService.updateCharacter(characterId, this.characterListItemForm.value).subscribe({
                 next: () => {
                     Swal.close();
                     Swal.fire({
@@ -162,7 +160,7 @@ export class CharacterListItemComponent implements OnInit {
         Swal.fire({
             allowOutsideClick: false,
             icon: 'info',
-            text: 'Registrando Usuario...'
+            text: 'Eliminando personaje...'
         });
         Swal.showLoading();
 
