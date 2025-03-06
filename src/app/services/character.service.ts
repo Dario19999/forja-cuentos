@@ -12,7 +12,6 @@ export class CharacterService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly router: Router,
     ) { }
 
     getCharacters(): Observable<any> {

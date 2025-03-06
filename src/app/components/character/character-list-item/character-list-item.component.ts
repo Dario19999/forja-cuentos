@@ -16,13 +16,13 @@ import Swal from 'sweetalert2';
                     name="floating_character_name"
                     id="floating_character_name"
                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    formControlName="characterName"
+                    formControlName="name"
                     required
                 />
             </div>
             <div class="relative z-0 w-full group">
                 <select
-                    formControlName="characterType"
+                    formControlName="type"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value="protagonista">Protagonista</option>
                     <option value="secundario">Secundario</option>
@@ -33,7 +33,7 @@ import Swal from 'sweetalert2';
                 <textarea
                     rows="7"
                     class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    formControlName="characterDescription"
+                    formControlName="role"
                     style="resize: none;"
                 >
                 </textarea>
@@ -86,13 +86,13 @@ export class CharacterListItemComponent implements OnInit {
     ) {
         effect(() => {
             if(this.toggleEdit()){
-                this.characterListItemForm.get('characterName')?.enable();
-                this.characterListItemForm.get('characterType')?.enable();
-                this.characterListItemForm.get('characterDescription')?.enable();
+                this.characterListItemForm.get('name')?.enable();
+                this.characterListItemForm.get('type')?.enable();
+                this.characterListItemForm.get('role')?.enable();
             } else {
-                this.characterListItemForm.get('characterName')?.disable();
-                this.characterListItemForm.get('characterType')?.disable();
-                this.characterListItemForm.get('characterDescription')?.disable();
+                this.characterListItemForm.get('name')?.disable();
+                this.characterListItemForm.get('type')?.disable();
+                this.characterListItemForm.get('role')?.disable();
             }
         });
     }
@@ -103,9 +103,9 @@ export class CharacterListItemComponent implements OnInit {
 
     formInit() {
         this.characterListItemForm = this.fb.group({
-            characterName: [{value: this.character.name, disabled: true}, [Validators.required, Validators.maxLength(100)]],
-            characterType: [{value: this.character.type, disabled: true}, [Validators.required]],
-            characterDescription: [{value: this.character.role, disabled: true}, [Validators.required]]
+            name: [{value: this.character.name, disabled: true}, [Validators.required, Validators.maxLength(100)]],
+            type: [{value: this.character.type, disabled: true}, [Validators.required]],
+            role: [{value: this.character.role, disabled: true}, [Validators.required]]
         });
     }
 
@@ -198,12 +198,12 @@ export class CharacterListItemComponent implements OnInit {
     }
 
     get invalidName() {
-        return this.characterListItemForm.get('characterName')?.invalid && this.characterListItemForm.get('characterName')?.touched;
+        return this.characterListItemForm.get('name')?.invalid && this.characterListItemForm.get('name')?.touched;
     }
     get invalidType() {
-        return this.characterListItemForm.get('characterType')?.invalid && this.characterListItemForm.get('characterType')?.touched;
+        return this.characterListItemForm.get('type')?.invalid && this.characterListItemForm.get('type')?.touched;
     }
     get invalidDescription() {
-        return this.characterListItemForm.get('characterDescription')?.invalid && this.characterListItemForm.get('characterDescription')?.touched;
+        return this.characterListItemForm.get('role')?.invalid && this.characterListItemForm.get('role')?.touched;
     }
 }
