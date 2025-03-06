@@ -63,4 +63,16 @@ export class CharacterService {
             })
         )
     }
+
+    removeCharacter(characterId: number): Observable<any> {
+        return this.http.delete(`${this.API_URL}/character/${characterId}`, {withCredentials: true})
+        .pipe(
+            map((characterData: any) => {
+                return characterData;
+            }),
+            catchError((err) => {
+                return throwError(() => err);
+            })
+        )
+    }
 }

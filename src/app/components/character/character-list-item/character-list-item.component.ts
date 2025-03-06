@@ -1,4 +1,4 @@
-import { Component, effect, Input, OnInit, signal } from '@angular/core';
+import { Component, effect, Input, OnInit, output, signal } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CharacterService } from '../../../services/character.service';
 import Swal from 'sweetalert2';
@@ -58,6 +58,7 @@ import Swal from 'sweetalert2';
                 <button
                     type="button"
                     class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-blue-800"
+                    (click)="onDelete(character.id)"
                 >Eliminar
                 </button>
             </div>
@@ -76,6 +77,8 @@ export class CharacterListItemComponent implements OnInit {
     public editedCharacter = signal<number>(0);
 
     private errorMessage: string = '';
+
+    public deletedCharacter = output<boolean>();
 
     constructor(
         private readonly fb: FormBuilder,
@@ -153,6 +156,45 @@ export class CharacterListItemComponent implements OnInit {
             });
 
         }
+    }
+
+    onDelete(characterId: number) {
+        Swal.fire({
+            allowOutsideClick: false,
+            icon: 'info',
+            text: 'Registrando Usuario...'
+        });
+        Swal.showLoading();
+
+        this.characterService.removeCharacter(characterId).subscribe({
+            next: () => {
+                Swal.close();
+                Swal.fire({
+                    allowOutsideClick: false,
+                    icon: 'success',
+                    confirmButtonText: "Ok",
+                    text: 'Personaje eliminado correctamente'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.deletedCharacter.emit(true);
+                    }
+                });
+            },
+            error: (err) => {
+                if (err.status === 409) {
+                    this.errorMessage = 'Error: El personaje existe dentro de un cuento';
+                }
+                else {
+                    this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                }
+                Swal.close();
+                Swal.fire({
+                    allowOutsideClick: false,
+                    icon: 'error',
+                    text:  this.errorMessage
+                });
+            }
+        });
     }
 
     get invalidName() {
