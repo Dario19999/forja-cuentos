@@ -160,36 +160,40 @@ export class CharacterListItemComponent implements OnInit {
         Swal.fire({
             allowOutsideClick: false,
             icon: 'info',
-            text: 'Eliminando personaje...'
-        });
-        Swal.showLoading();
-
-        this.characterService.removeCharacter(characterId).subscribe({
-            next: () => {
-                Swal.close();
-                Swal.fire({
-                    allowOutsideClick: false,
-                    icon: 'success',
-                    confirmButtonText: "Ok",
-                    text: 'Personaje eliminado correctamente'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.deletedCharacter.emit(true);
+            confirmButtonText: "Eliminar",
+            showCancelButton: true,
+            cancelButtonText: `Cancelar`,
+            text: '¿Eliminar personaje?',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.characterService.removeCharacter(characterId).subscribe({
+                    next: () => {
+                        Swal.close();
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'success',
+                            confirmButtonText: "Ok",
+                            text: 'Personaje eliminado correctamente'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.deletedCharacter.emit(true);
+                            }
+                        });
+                    },
+                    error: (err) => {
+                        if (err.status === 409) {
+                            this.errorMessage = 'Error: El personaje existe dentro de un cuento';
+                        }
+                        else {
+                            this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                        }
+                        Swal.close();
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'error',
+                            text:  this.errorMessage
+                        });
                     }
-                });
-            },
-            error: (err) => {
-                if (err.status === 409) {
-                    this.errorMessage = 'Error: El personaje existe dentro de un cuento';
-                }
-                else {
-                    this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
-                }
-                Swal.close();
-                Swal.fire({
-                    allowOutsideClick: false,
-                    icon: 'error',
-                    text:  this.errorMessage
                 });
             }
         });
