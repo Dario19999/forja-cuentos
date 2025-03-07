@@ -1,0 +1,10 @@
+.tale-image {
+    width: 400px;
+    height: 220px;
+    object-fit: cover;
+}
+
+.tale-image-input {
+    width: 400px;
+    height: 200px;
+}

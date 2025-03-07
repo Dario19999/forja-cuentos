@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
+import { TaleService } from '../../services/tale.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tale-list',
   template: `
     <div class="w-full">
-        <ul class="w-100 text-bg font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <li class="flex w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                <app-tale-list-item></app-tale-list-item>
-            </li>
+        <ul class="w-100 text-bg font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white overflow-y-auto" style="max-height: 75vh;">
+            @for (tale of tales; track $index) {
+                <li class="flex w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+                    <app-tale-list-item [tale]="tale"></app-tale-list-item>
+                </li>
+            }
         </ul>
         <div class="relative text-center m-5">
             <a
@@ -21,5 +25,24 @@ import { Component } from '@angular/core';
   styleUrl: './tale-list.component.css'
 })
 export class TaleListComponent {
+    public tales: any[] = [];
 
+    constructor(
+        private readonly taleService: TaleService
+    ) {
+        this.loadTales();
+    }
+
+    loadTales(): void {
+        Swal.fire({
+            allowOutsideClick: false
+        });
+        Swal.showLoading();
+        this.taleService.getTales().subscribe({
+            next: (talesData) => {
+                Swal.close();
+                this.tales = talesData;
+            }
+        });
+    }
 }
