@@ -82,7 +82,6 @@ export class NarratorListItemComponent implements OnInit{
     ]
 
     public toggleEdit = signal<boolean>(false);
-    public editedCharacter = signal<number>(0);
 
     private errorMessage: string = '';
 
