@@ -48,4 +48,16 @@ export class TaleService {
         )
     }
 
+    removeTale(taleId: number): Observable<any> {
+        return this.http.delete(`${this.API_URL}/tale/${taleId}`, {withCredentials: true})
+        .pipe(
+            map((taleData: any) => {
+                return taleData;
+            }),
+            catchError((err) => {
+                return throwError(() => err);
+            })
+        )
+    }
+
 }

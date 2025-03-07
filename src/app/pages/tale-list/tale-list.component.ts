@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
         <ul class="w-100 text-bg font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white overflow-y-auto" style="max-height: 75vh;">
             @for (tale of tales; track $index) {
                 <li class="flex w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                    <app-tale-list-item [tale]="tale"></app-tale-list-item>
+                    <app-tale-list-item [tale]="tale" (deletedTale)="deletedTale($event)"></app-tale-list-item>
                 </li>
             }
         </ul>
@@ -44,5 +44,11 @@ export class TaleListComponent {
                 this.tales = talesData;
             }
         });
+    }
+
+    deletedTale(deleted: boolean): void {
+        if(deleted){
+            this.loadTales();
+        }
     }
 }

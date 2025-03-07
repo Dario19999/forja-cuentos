@@ -1,4 +1,4 @@
-import { Component, effect, Input, OnInit, signal } from '@angular/core';
+import { Component, effect, Input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaleService } from '../../../services/tale.service';
 import Swal from 'sweetalert2';
@@ -55,29 +55,41 @@ import Swal from 'sweetalert2';
                 @if(!toggleEdit()){
                     <button
                         type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                         (click)="toggleEdit.set(true)"
                     >Editar
                     </button>
                 } @else {
                     <button
                         type="submit"
-                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                        class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                         (click)="onSubmit(tale.id)"
                         >Guardar
                     </button>
                 }
-                <button
-                    type="button"
-                    class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-blue-800"
-                >Eliminar
-                </button>
-                <button
-                    routerLink="/tale"
-                    type="button"
-                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-blue-800"
-                >Reporducir
-                </button>
+                @if (!toggleEdit()) {
+                    <button
+                        routerLink="/tale"
+                        type="button"
+                        class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                    >Reporducir
+                    </button>
+                    <button
+                        type="button"
+                        class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        (click)="onDelete(tale.id)"
+                    >Eliminar
+                    </button>
+                }
+                @if (toggleEdit()) {
+                    <button
+                        type="button"
+                        class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        (click)="toggleEdit.set(false)"
+                    >Cancelar
+                    </button>
+                }
+
             </div>
         </div>
         @if (toggleEdit()) {
@@ -99,15 +111,17 @@ import Swal from 'sweetalert2';
 export class TaleListItemComponent implements OnInit{
 
     public taleListItemForm!: FormGroup;
-
-    public toggleEdit = signal<boolean>(false);
-
     private readonly taleFormData = new FormData();
-
     public selectedFile: File | null = null;
+
+
+
 
     @Input()
     public tale: any = {};
+    public deletedTale = output<boolean>();
+    public toggleEdit = signal<boolean>(false);
+
 
     constructor(
         private readonly formBuilder: FormBuilder,
@@ -191,5 +205,44 @@ export class TaleListItemComponent implements OnInit{
                 }
             });
         }
+    }
+
+    onDelete(taleId: number) {
+        Swal.fire({
+            allowOutsideClick: false,
+            icon: 'info',
+            confirmButtonText: "Eliminar",
+            showCancelButton: true,
+            cancelButtonText: `Cancelar`,
+            text: '¿Eliminar cuento?',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.taleService.removeTale(taleId).subscribe({
+                    next: () => {
+                        Swal.close();
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'success',
+                            confirmButtonText: "Ok",
+                            text: 'Cuento eliminado correctamente'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.deletedTale.emit(true);
+                            }
+                        });
+                    },
+                    error: (err) => {
+                        Swal.close();
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'error',
+                            text:  'Error al eliminar cuento'
+                        });
+                    }
+                });
+            }
+        });
+
+
     }
 }
