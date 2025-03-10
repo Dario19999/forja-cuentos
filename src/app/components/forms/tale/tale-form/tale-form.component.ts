@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { TaleService } from '../../../../services/tale.service';
+import { CharacterService } from '../../../../services/character.service';
+import { NarratorService } from '../../../../services/narrator.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-tale-form',
@@ -17,8 +21,8 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
                             <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                             </svg>
-                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click para subir</span> o drag and drop</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG or JPG</p>
                         </div>
                         <input
                         formControlName="taleImage"
@@ -49,47 +53,78 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
                 </div>
             </div>
             <div class="relative z-0 w-full mb-5 group">
+                <label
+                    for="taleGenre"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Género
+                </label>
                 <select
                     id="taleGenre"
                     formControlName="taleGenre"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option>Genero</option>
+                    @for (genre of genreList; track $index) {
+                        <option value='{{ genre.value }}'>{{ genre.label }}</option>
+                    }
                 </select>
                 <div *ngIf="invalidGenre" class="mt-2 text-sm text-red-600 dark:text-red-500">
                     <span *ngIf="taleForm.get('taleGenre')?.errors?.['required']">El tipo de narrador es requerido</span>
                 </div>
             </div>
             <div class="relative z-0 w-full mb-5 group">
+                <label
+                    for="narrator"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Narrador
+                </label>
                 <select
                     id="narrator"
                     formControlName="narrator"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option>Narrador</option>
+                    @for (narrator of narratorList; track $index) {
+                        <option value='{{ narrator.id }}'>{{ narrator.alias }}</option>
+                    }
                 </select>
                 <div *ngIf="invalidNarrator" class="mt-2 text-sm text-red-600 dark:text-red-500">
                     <span *ngIf="taleForm.get('narrator')?.errors?.['required']">El narrador es requerido</span>
                 </div>
             </div>
             <div class="relative z-0 w-full mb-5 group">
+                <label
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Personajes
+                </label>
                 <div class="md:gap-6 border-2 border-solid p-4">
-                    <button
-                    (click)="addCharacter()"
-                    type="button"
-                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
-                    >
-                        +
-                    </button>
+                    @if (characters.length < characterList.length) {
+                        <button
+                            (click)="addCharacter()"
+                            type="button"
+                            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                            >
+                            +
+                        </button>
+                    }
                     <div formArrayName="characters">
-                        <div *ngFor="let character of characters.controls; let i = index; let first = first" class="mb-2 flex gap-2">
-                            <select
-                                [formControlName]="i"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option>Personaje</option>
-                            </select>
-                            <button *ngIf="!first" type="button" (click)="removeCharacter(i)" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-small rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
-                                -
-                            </button>
-                        </div>
+                        @for (control of characters.controls; track i; let i = $index; let first = $first) {
+                            <div class="mb-2 flex gap-2">
+                                <select
+                                    [formControlName]="i"
+                                    (change)="onSelectedCharacter($event, i)"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    @for (character of characterList; track $index) {
+                                        <option
+                                            value='{{ character.id }}'
+                                            [disabled]="character.selected && characters.at(i).value != character.id"
+                                            >{{ character.name }}
+                                        </option>
+                                    }
+                                </select>
+                                @if (!first) {
+                                    <button type="button" (click)="removeCharacter(i)" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-small rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+                                        -
+                                    </button>
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -108,7 +143,7 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
                 ></textarea>
                 <div *ngIf="invalidIntroduction" class="mt-2 text-sm text-red-600 dark:text-red-500">
                     <span *ngIf="taleForm.get('taleIntroduction')?.errors?.['required']">La introducción es requerida</span>
-                    <span *ngIf="taleForm.get('taleIntroduction')?.errors?.['maxlength']">La introducción no puede exceder los 150 caracteres</span>
+                    <span *ngIf="taleForm.get('taleIntroduction')?.errors?.['maxlength']">La introducción no puede exceder los 500 caracteres</span>
                 </div>
             </div>
             <div class="relative z-0 w-full mb-5 group">
@@ -126,7 +161,7 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
                 ></textarea>
                 <div *ngIf="invalidDevelopment" class="mt-2 text-sm text-red-600 dark:text-red-500">
                     <span *ngIf="taleForm.get('taleDevelopment')?.errors?.['required']">El desarrollo es requerido</span>
-                    <span *ngIf="taleForm.get('taleDevelopment')?.errors?.['maxlength']">El desarrollo no puede exceder los 150 caracteres</span>
+                    <span *ngIf="taleForm.get('taleDevelopment')?.errors?.['maxlength']">El desarrollo no puede exceder los 500 caracteres</span>
                 </div>
             </div>
             <div class="relative z-0 w-full mb-5 group">
@@ -144,7 +179,7 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
                 ></textarea>
                 <div *ngIf="invalidConclusion" class="mt-2 text-sm text-red-600 dark:text-red-500">
                     <span *ngIf="taleForm.get('taleConclusion')?.errors?.['required']">La conclusión es requerida</span>
-                    <span *ngIf="taleForm.get('taleConclusion')?.errors?.['maxlength']">La conclusión no puede exceder los 150 caracteres</span>
+                    <span *ngIf="taleForm.get('taleConclusion')?.errors?.['maxlength']">La conclusión no puede exceder los 500 caracteres</span>
                 </div>
             </div>
             <div class="relative z-0 w-full group m-3 text-center">
@@ -159,30 +194,66 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
   `,
   styleUrl: './tale-form.component.css'
 })
-export class TaleFormComponent {
+export class TaleFormComponent implements OnInit {
     public taleForm!: FormGroup;
 
+    public genreList = [
+        { value: 'aventura', label: 'Aventura' },
+        { value: 'c-f', label: 'Ciencia Ficción' },
+        { value: 'fantasia', label: 'Fantasía' },
+        { value: 'misterio', label: 'Misterio' },
+        { value: 'terror', label: 'Terror' }
+    ]
+
+    public characterList: any = [];
+    public narratorList: any = [];
+    public formerValues: number[] = [];
+
+    private readonly destroy$ = new Subject<void>();
+
     constructor(
-        private readonly fb: FormBuilder
+        private readonly fb: FormBuilder,
+        private readonly taleService: TaleService,
+        private readonly characterService: CharacterService,
+        private readonly narratorService: NarratorService,
+        private readonly cdr: ChangeDetectorRef
     ) {
         this.initForm();
+    }
+
+    ngOnInit() {
+        this.loadCharacters();
+        this.characters.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(values => {
+            if (this.formerValues.length !== values.length) {
+                this.formerValues = [...values];
+            }
+        });
+        this.loadNarrators();
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     initForm() {
         this.taleForm = this.fb.group({
             taleImage: ['', [Validators.required]],
             taleName: ['', [Validators.required, Validators.maxLength(30)]],
-            taleGenre: ['Genero', [Validators.required]],
-            narrator: ['Narrador', [Validators.required]],
+            taleGenre: ['aventura', [Validators.required]],
+            narrator: ['', [Validators.required]],
             characters: this.fb.array([this.createCharacterControl()]),
-            taleIntroduction: ['', [Validators.required, Validators.maxLength(150)]],
-            taleDevelopment: ['', [Validators.required, Validators.maxLength(150)]],
-            taleConclusion: ['', [Validators.required, Validators.maxLength(150)]],
+            taleIntroduction: ['', [Validators.required, Validators.maxLength(500)]],
+            taleDevelopment: ['', [Validators.required, Validators.maxLength(500)]],
+            taleConclusion: ['', [Validators.required, Validators.maxLength(500)]],
         });
     }
 
     createCharacterControl() {
-        return this.fb.control('Personaje', [Validators.required]);
+        this.formerValues.push(0);
+        return this.fb.control('', [Validators.required]);
     }
 
     get characters() {
@@ -193,8 +264,79 @@ export class TaleFormComponent {
         this.characters.push(this.createCharacterControl());
     }
 
+    onSelectedCharacter(event: Event, index: number) {
+        const selectElement = event.target as HTMLSelectElement;
+        const selectedId = Number(selectElement.value);
+        const formerSelected =this.formerValues[index];
+
+        if (formerSelected) {
+          this.updateSelectState(formerSelected, false);
+        }
+
+        if (selectedId) {
+          this.updateSelectState(selectedId, true);
+        }
+
+        this.formerValues[index] = selectedId;
+    }
+
+
     removeCharacter(index: number) {
-        this.characters.removeAt(index);
+        const characterId = this.characters.at(index).value;
+        const updatedCharacters = this.characters.controls.filter((_, i) => i !== index);
+        this.taleForm.setControl('characters', this.fb.array(updatedCharacters));
+
+        this.formerValues.splice(index, 1);
+
+        this.updateSelectState(characterId, false);
+
+        this.cdr.detectChanges();
+    }
+
+    private updateSelectState(characterId: number, selectedOpt: boolean): void {
+        const index = this.characterList.findIndex((p: { id: number; }) => p.id === Number(characterId));
+        console.log(this.characterList[index], index);
+        if (index !== -1) {
+          this.characterList[index].selected = selectedOpt;
+        }
+    }
+
+
+    loadCharacters(): void {
+        this.characterService.getCharacters()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(
+            {
+            next: characters => {
+                this.characterList = characters.map( (character: any) => {
+                    return {
+                        ...character,
+                        selected: false
+                    };
+                });
+
+                if (this.characterList.length > 0 && this.characters.length > 0) {
+                    this.characters.at(0).setValue(this.characterList[0].id);
+                    this.formerValues.push(this.characterList[0].id);
+                    this.updateSelectState(this.characterList[0].id, true);
+                  }
+            },
+            error: error => console.error(error)
+        });
+    }
+
+    loadNarrators(): void {
+        this.narratorService.getNarrators()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe( {
+            next: narrators => {
+                this.narratorList = narrators;
+                if ( this.narratorList.length > 0 ) {
+                    this.taleForm.get('narrator')?.setValue(this.narratorList[0].id);
+                  }
+            },
+            error: error => console.error(error)
+        });
     }
 
     onSubmit() {
