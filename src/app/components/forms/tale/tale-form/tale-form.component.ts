@@ -4,6 +4,8 @@ import { TaleService } from '../../../../services/tale.service';
 import { CharacterService } from '../../../../services/character.service';
 import { NarratorService } from '../../../../services/narrator.service';
 import { Subject, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tale-form',
@@ -216,13 +218,26 @@ export class TaleFormComponent implements OnInit {
         private readonly taleService: TaleService,
         private readonly characterService: CharacterService,
         private readonly narratorService: NarratorService,
-        private readonly cdr: ChangeDetectorRef
+        private readonly cdr: ChangeDetectorRef,
+        private readonly router: Router
     ) {
         this.initForm();
     }
 
     ngOnInit() {
         this.loadCharacters();
+        if (this.characterList.length > 0) {
+            Swal.fire({
+                allowOutsideClick: false,
+                icon: 'warning',
+                confirmButtonText: "Ok",
+                text: 'No hay personajes para agregar a un cuento nuevo. Por favor, crea al menos uno antes de continuar.'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.router.navigate(['/character-list']);
+                }
+            });
+        }
         this.characters.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(values => {
@@ -231,6 +246,18 @@ export class TaleFormComponent implements OnInit {
             }
         });
         this.loadNarrators();
+        if (this.narratorList.length > 0) {
+            Swal.fire({
+                allowOutsideClick: false,
+                icon: 'warning',
+                confirmButtonText: "Ok",
+                text: 'No hay narradores para agregar a un cuento nuevo. Por favor, crea al menos uno antes de continuar.'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.router.navigate(['/narrator-list']);
+                }
+            });
+        }
     }
 
     ngOnDestroy() {
