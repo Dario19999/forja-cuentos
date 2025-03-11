@@ -40,7 +40,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'tale',
+    path: 'tale/:id',
     component: ViewTaleComponent,
     canActivate: [authGuard]
   },

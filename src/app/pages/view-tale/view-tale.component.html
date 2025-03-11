@@ -1,29 +1,29 @@
 <div class="tale--background grid grid-cols-1 grid-rows-2 gap-4 h-full">
-    <div class="tale-image--container w-full h-full">
-        <img src="../../../assets/img/home-background.png" alt="" class="tale-image w-full h-full object-contain">
+    <div class="flex items-center justify-center w-full h-full flex items-center justify-center ">
+        <img [src]="taleData.imageUrl" alt="" class="tale-image w-50 h-full object-contain rounded-lg">
     </div>
-    <div class="tale-text--container flex w-full h-full text-center grid grid-cols-3 align-center">
-        <div>
-            <button class="tale-button--close bg-blue-500 text-white p-2">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.293 1.707 1.707 7.293a1 1 0 0 0 0 1.414l5.586 5.586A1 1 0 0 0 9 13.586V2.414a1 1 0 0 0-1.707-.707Z"/>
-                </svg>
-            </button>
-        </div>
-        <div class="tale-text--content">
-            <p class="tale-content text-lg">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    <div class="flex w-full h-full items-center justify-around gap-5">
+        <button
+            class="disabled:cursor-not-allowed text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            (click)="prevPart()"
+            [disabled]="currentPartIndex === 0"
+        >
+            <svg class="flex items-center justify-center h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.293 1.707 1.707 7.293a1 1 0 0 0 0 1.414l5.586 5.586A1 1 0 0 0 9 13.586V2.414a1 1 0 0 0-1.707-.707Z"/>
+            </svg>
+        </button>
+        <div class="p-4 bg-white shadow-lg rounded-lg max-w-2xl w-full">
+            <p class="whitespace-pre-line text-lg">
+                {{ currentTextPart }}
             </p>
         </div>
-        <div>
-            <button class="tale-button--close bg-blue-500 text-white p-2">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m2.707 14.293 5.586-5.586a1 1 0 0 0 0-1.414L2.707 1.707A1 1 0 0 0 1 2.414v11.172a1 1 0 0 0 1.707.707Z"/>
-                </svg>
-            </button>
-        </div>
-    </div>
+        <button
+            class="disabled:cursor-not-allowed text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            (click)="nextPart()"
+            [disabled]="currentPartIndex === textParts.length - 1"
+        >
+            <svg class="flex items-center justify-center h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m2.707 14.293 5.586-5.586a1 1 0 0 0 0-1.414L2.707 1.707A1 1 0 0 0 1 2.414v11.172a1 1 0 0 0 1.707.707Z"/>
+            </svg>
+        </button>
 </div>

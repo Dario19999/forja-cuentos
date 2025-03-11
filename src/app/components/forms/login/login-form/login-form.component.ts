@@ -25,8 +25,8 @@ export class LoginFormComponent {
 
     formInit(): void {
         this.loginForm = this.formBuilder.group({
-            email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
-            password: ['', [Validators.required, Validators.maxLength(20)]],
+            email: ['prueba@gmail.com', [Validators.required, Validators.email, Validators.maxLength(50)]],
+            password: ['TestPassword1234.', [Validators.required, Validators.maxLength(20)]],
         });
     }
 
