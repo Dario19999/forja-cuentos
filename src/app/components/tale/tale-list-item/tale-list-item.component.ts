@@ -1,5 +1,5 @@
 import { Component, effect, Input, OnInit, output, signal } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaleService } from '../../../services/tale.service';
 import Swal from 'sweetalert2';
 @Component({
@@ -22,25 +22,37 @@ import Swal from 'sweetalert2';
             <div class="relative z-0 w-full group">
                 @if(toggleEdit()){
                     <div class="flex items-center justify-center w-full tale-image-input">
-                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-50 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-25 w-100 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                 <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                 </svg>
-                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click para subir imagen</span> o drag and drop</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">PNG or JPG</p>
+                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click para subir imagen</span> ó drag and drop</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">PNG ó JPG</p>
                             </div>
                             <input
-                            id="dropzone-file"
-                            type="file"
-                            class="hidden"
-                            (change)="onFileSelected($event)"
+                                formControlName="taleImage"
+                                id="dropzone-file"
+                                type="file"
+                                class="hidden"
+                                (change)="onFileSelected($event)"
+                                accept="image/png, image/jpg"
                             />
-
                         </label>
                     </div>
                 } @else {
-                    <img src="{{tale.imageUrl}}" alt="placeholder" width="400" height="220" class="tale-image object-cover"/>
+                    <img src="{{tale.imageUrl}}" alt="placeholder" width="400" height="220" class="tale-image object-cover w-full h-64 rounded-lg"/>
+                }
+                @if (toggleEdit() && taleListItemForm.get('taleImage')?.value && imageSrc) {
+                    <div class="relative z-0 w-full group">
+                        <div class="flex items-center justify-center w-full">
+                            <img
+                                [src]="imageSrc"
+                                alt="taleImage"
+                                class="w-full h-64 object-cover rounded-lg"
+                            />
+                        </div>
+                    </div>
                 }
             </div>
             <div class="relative z-0 w-full group">
@@ -113,9 +125,7 @@ export class TaleListItemComponent implements OnInit{
     public taleListItemForm!: FormGroup;
     private readonly taleFormData = new FormData();
     public selectedFile: File | null = null;
-
-
-
+    public imageSrc: string = '';
 
     @Input()
     public tale: any = {};
@@ -134,6 +144,7 @@ export class TaleListItemComponent implements OnInit{
             } else {
                 this.taleListItemForm.get('title')?.disable();
                 this.taleListItemForm.get('synopsis')?.disable();
+                this.taleListItemForm.get('taleImage')?.reset();
             }
         });
     }
@@ -144,17 +155,20 @@ export class TaleListItemComponent implements OnInit{
 
     formInit(): void {
         this.taleListItemForm = this.formBuilder.group({
-            title: [{value: this.tale.title, disabled: true}],
-            fullTale: [{value: this.tale.fullTale, disabled: true}],
-            synopsis: [{value: this.tale.synopsis, disabled: true}],
+            taleImage: ['', [Validators.required]],
+            title: [{value: this.tale.title, disabled: true}, [Validators.required]],
+            fullTale: [{value: this.tale.fullTale, disabled: true},  [Validators.required]],
+            synopsis: [{value: this.tale.synopsis, disabled: true},  [Validators.required]],
         });
     }
 
     onFileSelected(event: any) {
         const file = event.target.files[0];
         if (file) {
-            this.selectedFile = file;
-            this.taleFormData.append('taleImage', this.selectedFile!);
+            const reader = new FileReader();
+            reader.onload = (e: any) => this.imageSrc = e.target.result;
+            reader.readAsDataURL(file)
+            this.taleFormData.append('taleImage', file);
         }
     }
 
@@ -242,7 +256,23 @@ export class TaleListItemComponent implements OnInit{
                 });
             }
         });
-
-
     }
+
+    get invalidImage() {
+        return this.taleListItemForm.get('taleImage')?.invalid && this.taleListItemForm.get('taleImage')?.touched
+    }
+
+    get invalidName() {
+        return this.taleListItemForm.get('title')?.invalid && this.taleListItemForm.get('taleName')?.touched;
+    }
+
+    get invalidSynopsis() {
+        return this.taleListItemForm.get('synopsis')?.invalid && this.taleListItemForm.get('synopsis')?.touched;
+    }
+
+    get invalidFullTale() {
+        return this.taleListItemForm.get('fullTale')?.invalid && this.taleListItemForm.get('fullTale')?.touched;
+    }
+
+
 }
