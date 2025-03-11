@@ -36,6 +36,18 @@ export class TaleService {
         )
     }
 
+    createTale(taleData: FormData): Observable<any> {
+        return this.http.post(`${this.API_URL}/tale`, taleData, {withCredentials: true})
+        .pipe(
+            map((taleData: any) => {
+                return taleData;
+            }),
+            catchError((err) => {
+                return throwError(() => err);
+            })
+        )
+    }
+
     updateTale(taleId: number, taleData: FormData): Observable<any> {
         return this.http.put(`${this.API_URL}/tale/${taleId}`, taleData, {withCredentials: true})
         .pipe(

@@ -15,25 +15,42 @@ import { Router } from '@angular/router';
             [formGroup]="taleForm"
             (ngSubmit)="onSubmit()"
             class="taleForm max-w-md mx-auto"
-        >
+            enctype="multipart/form-data">
             <div class="relative z-0 w-full mb-5 group">
                 <div class="flex items-center justify-center w-full">
-                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-15 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                         <div class="flex flex-col items-center justify-center pt-5 pb-6">
                             <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                             </svg>
-                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click para subir</span> o drag and drop</p>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click para subir imagen</span></p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">PNG or JPG</p>
                         </div>
                         <input
-                        formControlName="taleImage"
-                        id="dropzone-file"
-                        type="file"
-                        class="hidden" />
+                            formControlName="taleImage"
+                            (change)="onFileSelected($event)"
+                            id="dropzone-file"
+                            type="file"
+                            class="hidden"
+                            accept="image/png, image/jpg"
+                        />
                     </label>
                 </div>
+                <div *ngIf="invalidImage" class="mt-2 text-sm text-red-600 dark:text-red-500">
+                    <span *ngIf="taleForm.get('taleImage')?.errors?.['required']">La imagen es requerida.</span>
+                </div>
             </div>
+            @if (taleForm.get('taleImage')?.value && imageSrc) {
+                <div class="relative z-0 w-full mb-5 group">
+                    <div class="flex items-center justify-center w-full">
+                        <img
+                            [src]="imageSrc"
+                            alt="taleImage"
+                            class="w-full h-64 object-cover rounded-lg"
+                        />
+                    </div>
+                </div>
+            }
             <div class="relative z-0 w-full mb-5 group">
                 <input
                     type="text"
@@ -114,7 +131,7 @@ import { Router } from '@angular/router';
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     @for (character of characterList; track $index) {
                                         <option
-                                            value='{{ character.id }}'
+                                            [value]='character.id'
                                             [disabled]="character.selected && characters.at(i).value != character.id"
                                             >{{ character.name }}
                                         </option>
@@ -209,7 +226,10 @@ export class TaleFormComponent implements OnInit {
 
     public characterList: any = [];
     public narratorList: any = [];
-    public formerValues: number[] = [];
+    public lastValues: number[] = [];
+    public taleData = new FormData();
+    public imageSrc: string = '';
+    private errorMessage = '';
 
     private readonly destroy$ = new Subject<void>();
 
@@ -226,38 +246,14 @@ export class TaleFormComponent implements OnInit {
 
     ngOnInit() {
         this.loadCharacters();
-        if (this.characterList.length > 0) {
-            Swal.fire({
-                allowOutsideClick: false,
-                icon: 'warning',
-                confirmButtonText: "Ok",
-                text: 'No hay personajes para agregar a un cuento nuevo. Por favor, crea al menos uno antes de continuar.'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.router.navigate(['/character-list']);
-                }
-            });
-        }
         this.characters.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(values => {
-            if (this.formerValues.length !== values.length) {
-                this.formerValues = [...values];
+            if (this.lastValues.length !== values.length) {
+                this.lastValues = [...values];
             }
         });
         this.loadNarrators();
-        if (this.narratorList.length > 0) {
-            Swal.fire({
-                allowOutsideClick: false,
-                icon: 'warning',
-                confirmButtonText: "Ok",
-                text: 'No hay narradores para agregar a un cuento nuevo. Por favor, crea al menos uno antes de continuar.'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.router.navigate(['/narrator-list']);
-                }
-            });
-        }
     }
 
     ngOnDestroy() {
@@ -279,7 +275,7 @@ export class TaleFormComponent implements OnInit {
     }
 
     createCharacterControl() {
-        this.formerValues.push(0);
+        this.lastValues.push(0);
         return this.fb.control('', [Validators.required]);
     }
 
@@ -294,7 +290,7 @@ export class TaleFormComponent implements OnInit {
     onSelectedCharacter(event: Event, index: number) {
         const selectElement = event.target as HTMLSelectElement;
         const selectedId = Number(selectElement.value);
-        const formerSelected =this.formerValues[index];
+        const formerSelected =this.lastValues[index];
 
         if (formerSelected) {
           this.updateSelectState(formerSelected, false);
@@ -304,7 +300,7 @@ export class TaleFormComponent implements OnInit {
           this.updateSelectState(selectedId, true);
         }
 
-        this.formerValues[index] = selectedId;
+        this.lastValues[index] = selectedId;
     }
 
 
@@ -313,7 +309,7 @@ export class TaleFormComponent implements OnInit {
         const updatedCharacters = this.characters.controls.filter((_, i) => i !== index);
         this.taleForm.setControl('characters', this.fb.array(updatedCharacters));
 
-        this.formerValues.splice(index, 1);
+        this.lastValues.splice(index, 1);
 
         this.updateSelectState(characterId, false);
 
@@ -322,7 +318,6 @@ export class TaleFormComponent implements OnInit {
 
     private updateSelectState(characterId: number, selectedOpt: boolean): void {
         const index = this.characterList.findIndex((p: { id: number; }) => p.id === Number(characterId));
-        console.log(this.characterList[index], index);
         if (index !== -1) {
           this.characterList[index].selected = selectedOpt;
         }
@@ -337,16 +332,32 @@ export class TaleFormComponent implements OnInit {
             next: characters => {
                 this.characterList = characters.map( (character: any) => {
                     return {
+                        id: Number(character.id),
                         ...character,
                         selected: false
                     };
                 });
 
+                console.log(this.characterList);
+
+                if (this.characterList.length <= 0) {
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'warning',
+                        confirmButtonText: "Ok",
+                        text: 'No hay personajes para agregar a un cuento nuevo. Por favor, crea al menos uno antes de continuar.'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.router.navigate(['/character-list']);
+                        }
+                    });
+                }
+
                 if (this.characterList.length > 0 && this.characters.length > 0) {
                     this.characters.at(0).setValue(this.characterList[0].id);
-                    this.formerValues.push(this.characterList[0].id);
+                    this.lastValues.push(this.characterList[0].id);
                     this.updateSelectState(this.characterList[0].id, true);
-                  }
+                }
             },
             error: error => console.error(error)
         });
@@ -358,17 +369,39 @@ export class TaleFormComponent implements OnInit {
         .subscribe( {
             next: narrators => {
                 this.narratorList = narrators;
+                if (this.narratorList.length <= 0) {
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'warning',
+                        confirmButtonText: "Ok",
+                        text: 'No hay narradores para agregar a un cuento nuevo. Por favor, crea al menos uno antes de continuar.'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.router.navigate(['/narrator-list']);
+                        }
+                    });
+                }
+
                 if ( this.narratorList.length > 0 ) {
                     this.taleForm.get('narrator')?.setValue(this.narratorList[0].id);
-                  }
+                }
             },
             error: error => console.error(error)
         });
     }
 
+    onFileSelected(event: any) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e: any) => this.imageSrc = e.target.result;
+            reader.readAsDataURL(file);
+            this.taleData.append('taleImage', file);
+        }
+    }
+
     onSubmit() {
         if (this.taleForm.invalid) {
-            console.log('Formulario inválido');
             Object.values(this.taleForm.controls).forEach( control =>{
                 if(control instanceof FormGroup){
                     Object.values(control.controls).forEach( control => control.markAllAsTouched())
@@ -379,8 +412,58 @@ export class TaleFormComponent implements OnInit {
             });
         }
         else{
-            console.log(this.taleForm.value);
+            this.taleData.append('title', this.taleForm.get('taleName')?.value);
+            this.taleData.append('genre', this.taleForm.get('taleGenre')?.value);
+            this.taleData.append('narratorId', this.taleForm.get('narrator')?.value);
+            this.taleData.append('introduction', this.taleForm.get('taleIntroduction')?.value);
+            this.taleData.append('development', this.taleForm.get('taleDevelopment')?.value);
+            this.taleData.append('conclusion', this.taleForm.get('taleConclusion')?.value);
+            this.taleData.append('characters', JSON.stringify(this.taleForm.get('characters')?.value));
+
+            Swal.fire({
+                allowOutsideClick: false,
+                icon: 'info',
+                text: 'Creando cuento...'
+            });
+            Swal.showLoading();
+
+            this.taleService.createTale(this.taleData)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: () => {
+                    Swal.close();
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'success',
+                        confirmButtonText: "Ok",
+                        text: "El cuento ha sido creado con éxito."
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.router.navigate(['/tale-list']);
+                        }
+                    });
+                },
+                error: (error) => {
+                    Swal.close();
+                    if (error.status === 409) {
+                        this.errorMessage = "Un cuento con el mismo nombre ya existe.";
+                    }
+                    else {
+                        this.errorMessage = "Error en el servidor. Por favor, inténtelo de nuevo.";
+                    }
+                    Swal.fire({
+                        allowOutsideClick: false,
+                        icon: 'error',
+                        confirmButtonText: "Ok",
+                        text: this.errorMessage
+                    });
+                }
+            });
         }
+    }
+
+    get invalidImage() {
+        return this.taleForm.get('taleImage')?.invalid && this.taleForm.get('taleImage')?.touched
     }
 
     get invalidName() {
