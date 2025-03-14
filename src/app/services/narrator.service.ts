@@ -25,7 +25,7 @@ export class NarratorService {
         )
     }
 
-    getNarrator(narratorId: string): Observable<any> {
+    getNarrator(narratorId: number): Observable<any> {
         return this.http.get(`${this.API_URL}/narrator/${narratorId}`, {withCredentials: true})
         .pipe(
             map((narratorData: any) => {
@@ -67,6 +67,21 @@ export class NarratorService {
         .pipe(
             map((narratorData: any) => {
                 return narratorData;
+            }),
+            catchError((err) => {
+                return throwError(() => err);
+            })
+        )
+    }
+
+    getNarration(narratorId: number, textSegment: string): Observable<any> {
+        return this.http.post(`${this.API_URL}/narrator/narration`, {narratorId, textSegment} ,{
+            withCredentials: true,
+            responseType: 'blob'
+        })
+        .pipe(
+            map((narrationData: any) => {
+                return narrationData;
             }),
             catchError((err) => {
                 return throwError(() => err);
