@@ -41,7 +41,28 @@ import Swal from 'sweetalert2';
                         </label>
                     </div>
                 } @else {
-                    <img src="{{tale.imageUrl}}" alt="placeholder" width="400" height="220" class="tale-image object-cover w-full h-64 rounded-lg"/>
+                    <div class="d-flex justify-content-center w-full">
+                        <img
+                            src="{{tale.imageUrl}}"
+                            alt="placeholder"
+                            width="400"
+                            height="220"
+                            [ngStyle]="{display: hasImageLoaded() ? 'block' : 'none'}"
+                            class="tale-image object-cover w-full h-64 rounded-lg"
+                            (load)="onLoad()"
+                        />
+
+                        @if (!hasImageLoaded()) {
+                            <div class="w-full h-64 flex items-center justify-center" style="width: 400px; height: 220px;">
+                                <img
+                                    height="25"
+                                    width="25"
+                                    src="assets/svg/loaders/tail-spin.svg"
+                                    alt="placeholder-spiner"
+                                />
+                            </div>
+                        }
+                    </div>
                 }
                 @if (toggleEdit() && taleListItemForm.get('taleImage')?.value && imageSrc) {
                     <div class="relative z-0 w-full group">
@@ -126,6 +147,8 @@ export class TaleListItemComponent implements OnInit{
     public tale: any = {};
     public deletedTale = output<boolean>();
     public toggleEdit = signal<boolean>(false);
+
+    public hasImageLoaded = signal<boolean>(false);
 
 
     constructor(
@@ -252,6 +275,12 @@ export class TaleListItemComponent implements OnInit{
             }
         });
     }
+
+    public onLoad(): void {
+        setTimeout(() => {
+          this.hasImageLoaded.set(true);
+        }, 1300);
+      }
 
     get invalidImage() {
         return this.taleListItemForm.get('taleImage')?.invalid && this.taleListItemForm.get('taleImage')?.touched

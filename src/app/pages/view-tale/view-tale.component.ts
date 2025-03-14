@@ -24,6 +24,8 @@ export class ViewTaleComponent implements OnInit {
     public partLength: number = 500;
     public currentPartIndex: number = 0;
 
+    public hasImageLoaded = signal<boolean>(false);
+
     private readonly destroy$ = new Subject<void>();
 
     @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
@@ -97,6 +99,12 @@ export class ViewTaleComponent implements OnInit {
             }
         });
     }
+
+    public onLoad(): void {
+        setTimeout(() => {
+          this.hasImageLoaded.set(true);
+        }, 1000);
+      }
 
     narrate(narrationSegment: string): void {
         this.isLoading.set(true);

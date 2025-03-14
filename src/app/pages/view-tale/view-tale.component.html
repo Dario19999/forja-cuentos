@@ -1,6 +1,24 @@
 <div class="tale--background grid grid-cols-1 grid-rows-2 gap-4 h-full">
     <div class="flex items-center justify-center w-full h-full flex items-center justify-center ">
-        <img [src]="taleData.imageUrl" alt="" class="tale-image w-50 h-full object-contain rounded-lg">
+
+            <img
+                [src]="taleData.imageUrl"
+                alt="placeholder"
+                [ngStyle]="{display: hasImageLoaded() ? 'block' : 'none'}"
+                class="tale-image w-50 h-full object-contain rounded-lg"
+                (load)="onLoad()"
+            />
+
+            @if (!hasImageLoaded()) {
+                <div class="w-full h-64 flex items-center justify-center" style="width: 400px; height: 220px;">
+                    <img
+                        height="25"
+                        width="25"
+                        src="assets/svg/loaders/tail-spin.svg"
+                        alt="placeholder-spiner"
+                    />
+                </div>
+            }
     </div>
     <div class="flex w-full h-full items-center justify-around gap-5">
         <button
