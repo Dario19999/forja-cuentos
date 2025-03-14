@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { TaleService } from './../../services/tale.service';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { NarratorService } from '../../services/narrator.service';
 
@@ -26,19 +26,18 @@ export class ViewTaleComponent implements OnInit {
 
     private readonly destroy$ = new Subject<void>();
 
-    private audioPlayer: HTMLAudioElement = {} as HTMLAudioElement;
+    @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
+
 
     constructor(
         private readonly taleService: TaleService,
         private readonly narratorService: NarratorService,
         private readonly activatedRoute: ActivatedRoute,
     ) {
-
     }
 
     ngOnInit() {
         this.getTale();
-        this.audioPlayer = document.querySelector('audio')!;
     }
 
     ngOnDestroy() {
@@ -84,7 +83,6 @@ export class ViewTaleComponent implements OnInit {
         return this.textParts[this.currentPartIndex];
     }
 
-
     getTale(): void {
         this.taleId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
         this.taleService.getTale(this.taleId)
@@ -102,22 +100,21 @@ export class ViewTaleComponent implements OnInit {
 
     narrate(narrationSegment: string): void {
         this.isLoading.set(true);
-        console.log(this.taleData.narratorId, narrationSegment);
+        this.isNarrating.set(true);
         this.narratorService.getNarration(this.taleData.narratorId, narrationSegment).subscribe({
             next: (audioBlob: Blob) => {
+
                 this.isLoading.set(false);
+
+                const audioPlayer = this.audioPlayerRef.nativeElement;
                 const audioUrl = URL.createObjectURL(audioBlob);
-                console.log(audioUrl);
-                this.audioPlayer.src = audioUrl;
-                this.audioPlayer.style.display = 'block';
-                this.audioPlayer.play();
-                this.isNarrating.set(true);
+
+                audioPlayer.src = audioUrl;
+                audioPlayer.play();
+
             },
             error: (err) => {
                 console.error(err);
-            },
-            complete: () => {
-                this.isNarrating.set(false);
             }
         });
     }
