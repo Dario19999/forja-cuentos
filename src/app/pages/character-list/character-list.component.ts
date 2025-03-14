@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-character-list',
   template: `
-    <ul class="w-100 text-bg font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <ul class="w-100 text-bg font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white overflow-y-auto" style="max-height: 75vh;">
         @for (character of characters; track $index) {
             <li class="flex w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
                 <app-character-list-item [character]="character" (deletedCharacter)="deletedCharacter($event)"></app-character-list-item>
