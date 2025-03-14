@@ -34,6 +34,7 @@ export class TaleListComponent {
     }
 
     loadTales(): void {
+        this.tales = [];
         Swal.fire({
             allowOutsideClick: false
         });

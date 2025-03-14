@@ -32,6 +32,7 @@ export class NarratorListComponent {
     }
 
     loadNarrators(): void {
+        this.narrators = [];
         Swal.fire({
             allowOutsideClick: false
         });

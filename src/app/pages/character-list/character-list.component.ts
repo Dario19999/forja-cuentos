@@ -32,6 +32,7 @@ export class CharacterListComponent {
     }
 
     loadCharacters(): void {
+        this.characters = [];
         Swal.fire({
             allowOutsideClick: false
         });
