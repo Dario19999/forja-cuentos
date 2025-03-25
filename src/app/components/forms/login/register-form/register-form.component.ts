@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../../../services/auth.service';
 import { Router } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register-form',
@@ -114,7 +115,29 @@ export class RegisterFormComponent implements OnInit {
                     icon: 'success',
                     text: 'Usuario registrado correctamente'
                 });
-                this.router.navigate(['/tale-list']);
+                 this.authService.login(userData.email, userData.password)
+                .subscribe({
+                    next: () => {
+                        Swal.close();
+                        this.router.navigate(['/tale-list']);
+                    },
+                    error: (err: HttpErrorResponse ) => {
+                        Swal.close();
+                        if (err.status === 401) {
+                            this.errorMessage = 'Email o contraseña incorrectos';
+                        }
+                        else {
+                            this.errorMessage = 'Error en el servidor. Por favor, inténtalo de nuevo más tarde';
+                        }
+
+                        Swal.fire({
+                            allowOutsideClick: false,
+                            icon: 'error',
+                            title: 'Error de Login',
+                            text: this.errorMessage
+                        });
+                    }
+                })
             },
             error: (err) => {
                 if (err.status === 409) {
