@@ -77,7 +77,6 @@ export class RegisterFormComponent implements OnInit {
     }
 
     onSubmit(): void {
-        console.log(this.registerForm.value);
         if (this.registerForm.invalid) {
             Object.values(this.registerForm.controls).forEach( control =>{
                 if(control instanceof FormGroup){

@@ -137,8 +137,6 @@ export class TaleFormComponent implements OnInit {
                     };
                 });
 
-                console.log(this.characterList);
-
                 if (this.characterList.length <= 0) {
                     Swal.fire({
                         allowOutsideClick: false,
