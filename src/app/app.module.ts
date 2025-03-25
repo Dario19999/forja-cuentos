@@ -23,6 +23,7 @@ import { ViewTaleComponent } from './pages/view-tale/view-tale.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { UserAccountComponent } from './pages/user-account/user-account.component';
+import { InfoTooltipComponent } from './components/common/info-tooltip/info-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { UserAccountComponent } from './pages/user-account/user-account.componen
     TaleListItemComponent,
     TaleFormComponent,
     ViewTaleComponent,
-    UserAccountComponent
+    UserAccountComponent,
+    InfoTooltipComponent
   ],
   imports: [
     BrowserModule,
