@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { EventsService } from './event.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
 
     private readonly currentUserSubject: BehaviorSubject<any>;
     public currentUser: Observable<any>;
-    private readonly API_URL = 'http://localhost:3000/api';
+    private readonly API_URL = environment.API_URL;
 
     constructor(
         private readonly http: HttpClient,

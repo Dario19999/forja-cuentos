@@ -8,9 +8,8 @@ const createWindow = () => {
         show: false,
         title: "Forja Cuentos",
         webPreferences: {
-            contextIsolation: false,
             nodeIntegration: true,
-            devTools: true,
+            devTools: process.env.APP_ENV === "dev",
         }
     });
 
@@ -18,7 +17,13 @@ const createWindow = () => {
         appWin.maximize();
         appWin.show();
     });
-    appWin.loadURL(process.env.APP_URL_LOCAL);
+
+    if(process.env.APP_ENV === "dev") {
+        appWin.loadURL(process.env.APP_URL_LOCAL);
+    }
+    else if (process.env.APP_ENV === "prod") {
+        appWin.loadFile(process.env.APP_URL_DIST);
+    }
 
     appWin.setMenu(null);
 

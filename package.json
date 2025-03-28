@@ -4,11 +4,13 @@
   "main": "main.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "electron-forge start",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "start-electron": "electron ."
+    "start-electron": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
     "dotenv": "^16.4.5",
+    "electron-squirrel-startup": "^1.0.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.17.2",
     "tslib": "^2.3.0",
@@ -30,6 +33,14 @@
     "@angular-devkit/build-angular": "^17.0.9",
     "@angular/cli": "^17.0.9",
     "@angular/compiler-cli": "^17.0.0",
+    "@electron-forge/cli": "^7.8.0",
+    "@electron-forge/maker-deb": "^7.8.0",
+    "@electron-forge/maker-rpm": "^7.8.0",
+    "@electron-forge/maker-squirrel": "^7.8.0",
+    "@electron-forge/maker-zip": "^7.8.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.8.0",
+    "@electron-forge/plugin-fuses": "^7.8.0",
+    "@electron/fuses": "^1.8.0",
     "@types/jasmine": "~5.1.0",
     "autoprefixer": "^10.4.19",
     "electron": "^30.0.1",
