@@ -24,7 +24,7 @@
                 <span *ngIf="characterForm.get('name')?.errors?.['maxlength']">El nombre no puede exceder los 30 caracteres</span>
             </div>
         </div>
-        <label for="type">Tipo de Personaje</label>
+        <label for="type" class="text-lg text-white">Tipo de Personaje</label>
         <div class="flex relative z-0 w-full mb-2 group">
             <select
                 id="type"
@@ -40,7 +40,7 @@
             <span *ngIf="characterForm.get('type')?.errors?.['required']">El tipo de personaje es requerido</span>
         </div>
         <div class="z-0 w-full mb-5 group">
-            <label for="role">Descripcion del Personaje</label>
+            <label for="role" class="text-lg text-white">Descripcion del Personaje</label>
             <textarea
                 rows="4"
                 class="block p-2.5 w-full text-lg text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

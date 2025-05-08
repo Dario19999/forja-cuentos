@@ -24,7 +24,7 @@
                 <span *ngIf="narratorForm.get('alias')?.errors?.['maxlength']">El nombre no puede exceder los 30 caracteres</span>
             </div>
         </div>
-        <label for="type">Tipo de Narrador</label>
+        <label for="type" class="text-lg text-white">Tipo de Narrador</label>
         <div class="flex relative z-0 w-full mb-2 group">
             <select
                 id="type"
@@ -40,7 +40,7 @@
             <span *ngIf="narratorForm.get('type')?.errors?.['required']">El tipo de narrador es requerido</span>
         </div>
         <div class="z-0 w-full mb-5 group">
-            <label for="voiceReference">Voz de Narrador</label>
+            <label for="voiceReference" class="text-lg text-white">Voz de Narrador</label>
             <select
                 id="voiceReference"
                 formControlName="voiceReference"
