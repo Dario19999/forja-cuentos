@@ -106,7 +106,7 @@ import Swal from 'sweetalert2';
                     </button>
                 } @else {
                     <button
-                        type="submit"
+                        type="button"
                         class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2"
                         (click)="onSubmit(tale.id)"
                         >Guardar
@@ -159,6 +159,7 @@ export class TaleListItemComponent implements OnInit{
             if(this.toggleEdit()){
                 this.taleListItemForm.get('title')?.enable();
                 this.taleListItemForm.get('synopsis')?.enable();
+                this.taleListItemForm.get('fullTale')?.enable();
             } else {
                 this.taleListItemForm.get('title')?.disable();
                 this.taleListItemForm.get('synopsis')?.disable();
@@ -173,7 +174,7 @@ export class TaleListItemComponent implements OnInit{
 
     formInit(): void {
         this.taleListItemForm = this.formBuilder.group({
-            taleImage: ['', [Validators.required]],
+            taleImage: ['', []],
             title: [{value: this.tale.title, disabled: true}, [Validators.required]],
             fullTale: [{value: this.tale.fullTale, disabled: true},  [Validators.required]],
             synopsis: [{value: this.tale.synopsis, disabled: true},  [Validators.required]],
@@ -203,7 +204,7 @@ export class TaleListItemComponent implements OnInit{
             });
         }
         else{
-
+            console.log(taleId);
             this.taleFormData.append('taleTitle', this.taleListItemForm.get('title')?.value);
             this.taleFormData.append('taleSynopsis', this.taleListItemForm.get('synopsis')?.value);
             this.taleFormData.append('taleBody', this.taleListItemForm.get('fullTale')?.value);

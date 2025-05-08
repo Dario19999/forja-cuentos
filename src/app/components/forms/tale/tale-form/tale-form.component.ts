@@ -246,6 +246,9 @@ export class TaleFormComponent implements OnInit {
                     if (error.status === 409) {
                         this.errorMessage = "Un cuento con el mismo nombre ya existe.";
                     }
+                    else if (error.status === 422) {
+                        this.errorMessage = "Se detectaron palabras prohibidas. Evalue el contenido del cuento.";
+                    }
                     else {
                         this.errorMessage = "Error en el servidor. Por favor, inténtelo de nuevo.";
                     }
