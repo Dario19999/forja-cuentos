@@ -10,7 +10,8 @@
     "test": "ng test",
     "start-electron": "electron .",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "release": "ng build && npm run package --arch=x64"
   },
   "private": true,
   "dependencies": {

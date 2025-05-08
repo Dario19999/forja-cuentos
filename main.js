@@ -4,10 +4,14 @@ const { app, BrowserWindow } = require("electron");
 let appWin;
 
 const createWindow = () => {
+    app.commandLine.appendSwitch('disable-features', 'SameSiteByDefaultCookies');
+
     appWin = new BrowserWindow({
         show: false,
         title: "Forja Cuentos",
         webPreferences: {
+            webSecurity: false,
+            contextIsolation: true,
             nodeIntegration: true,
             devTools: process.env.APP_ENV === "dev",
         }
