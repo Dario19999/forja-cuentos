@@ -9,17 +9,17 @@
                 type="text"
                 name="alias"
                 id="alias"
-                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                class="block py-2.5 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 formControlName="alias"
                 required
             />
             <label
                 for="alias"
-                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                class="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >Nombre de Narrador
             </label>
-            <div *ngIf="invalidName" class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <div *ngIf="invalidName" class="mt-2 text-lg text-red-600 dark:text-red-500">
                 <span *ngIf="narratorForm.get('alias')?.errors?.['required']">El nombre es requerido</span>
                 <span *ngIf="narratorForm.get('alias')?.errors?.['maxlength']">El nombre no puede exceder los 30 caracteres</span>
             </div>
@@ -29,14 +29,14 @@
             <select
                 id="type"
                 formControlName="type"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 @for (type of typeList; track $index) {
                     <option value='{{ type.value }}'>{{ type.label }}</option>
                 }
             </select>
             <app-info-tooltip [tooltipText]="narratorTooltip"></app-info-tooltip>
         </div>
-        <div *ngIf="invalidType" class="mb-3 text-sm text-red-600 dark:text-red-500">
+        <div *ngIf="invalidType" class="mb-3 text-lg text-red-600 dark:text-red-500">
             <span *ngIf="narratorForm.get('type')?.errors?.['required']">El tipo de narrador es requerido</span>
         </div>
         <div class="z-0 w-full mb-5 group">
@@ -44,11 +44,11 @@
             <select
                 id="voiceReference"
                 formControlName="voiceReference"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option value="female">Femenina</option>
                 <option value="male">Masculina</option>
             </select>
-            <div *ngIf="invalidVoice" class="mt-2 text-sm text-red-600 dark:text-red-500">
+            <div *ngIf="invalidVoice" class="mt-2 text-lg text-red-600 dark:text-red-500">
                 <span *ngIf="narratorForm.get('voiceReference')?.errors?.['required']">La voz es requerida</span>
             </div>
         </div>
