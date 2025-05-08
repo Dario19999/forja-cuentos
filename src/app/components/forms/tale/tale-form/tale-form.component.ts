@@ -154,6 +154,7 @@ export class TaleFormComponent implements OnInit {
                     this.characters.at(0).setValue(this.characterList[0].id);
                     this.lastValues.push(this.characterList[0].id);
                     this.updateSelectState(this.characterList[0].id, true);
+                    this.addCharacter();
                 }
             },
             error: error => console.error(error)
